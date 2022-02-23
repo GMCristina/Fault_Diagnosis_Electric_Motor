@@ -138,29 +138,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   ADE9000_Power();
-    uint16_t dati;
-
-    //Lettura reg RUN (prima)
-
-    printf("Prima lettura \r\n");
-    dati = ADE9000_SPI_Read_16(ADDR_RUN);
-    printf("Dopo prima lettura \r\n");
-    printf("ADDR_RUN = %x \r\n", dati);
-
-    //Scrittura reg RUN
-    dati = 0x0001;
-    ADE9000_SPI_Write_16(ADDR_RUN, dati);
-    printf("Dopo scrittura \r\n");
-    printf("ADDR_RUN scritto = %x \r\n",  dati);
-
-    dati = ADE9000_SPI_Read_16(ADDR_LAST_CMD);
-    dati = ADE9000_SPI_Read_16(ADDR_LAST_DATA_16);
-
-    //Lettura reg RUN (dopo)
-
-    dati = ADE9000_SPI_Read_16(ADDR_RUN);
-    printf("Dopo seconda lettura \r\n");
-    printf("ADDR_RUN = %x \r\n",  dati);
+  test_read_write_reg();
 
   /* USER CODE END 2 */
 

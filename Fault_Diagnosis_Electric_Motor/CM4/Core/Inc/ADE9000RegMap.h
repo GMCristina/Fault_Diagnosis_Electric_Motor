@@ -460,5 +460,6 @@
 #define ADDR_NIRMSONE_2                      0x000006BB            /*  SPI Burst Read Accessible. Registers organized by phase. See NIRMSONE. */
 #define ADDR_NIRMS1012_2                     0x000006BC            /*  SPI Burst Read Accessible. Registers organized by phase. See NIRMS1012. */
 
+#define ADDR_PART_ID						 0x00000472			   //This register identifies the IC. If the ADE9000_ID bit = 1, the IC is the ADE9000.
 
 

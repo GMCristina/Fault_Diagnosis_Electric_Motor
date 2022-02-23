@@ -10,10 +10,12 @@
 
 #include "ADE9000RegMap.h"
 #include "main.h"
+#include <stdio.h>
 
 #define TIMEOUT_SPI 100
+//SPI with 16 bit data frame
 #define SIZE_16 1
-#define SIZE_32 2
+
 
 extern SPI_HandleTypeDef hspi3;
 
@@ -37,6 +39,8 @@ void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data);
 
 void ADE9000_Setup(void);
 void ADE9000_Power(void);
+
+void test_read_write_reg(void);
 
 
 
