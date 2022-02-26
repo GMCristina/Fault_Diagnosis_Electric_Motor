@@ -57,10 +57,20 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define ADE9000_Reset_Pin GPIO_PIN_11
+#define ADE9000_Reset_GPIO_Port GPIOE
+#define ADE9000_IRQ1_Pin GPIO_PIN_13
+#define ADE9000_IRQ1_GPIO_Port GPIOE
+#define ADE9000_PM1_Pin GPIO_PIN_14
+#define ADE9000_PM1_GPIO_Port GPIOE
 #define STLINK_RX_Pin GPIO_PIN_8
 #define STLINK_RX_GPIO_Port GPIOD
 #define STLINK_TX_Pin GPIO_PIN_9
 #define STLINK_TX_GPIO_Port GPIOD
+#define ADE9000_CS_Pin GPIO_PIN_9
+#define ADE9000_CS_GPIO_Port GPIOG
+#define ADE9000_IRQ0_Pin GPIO_PIN_14
+#define ADE9000_IRQ0_GPIO_Port GPIOG
 void   MX_ETH_Init(void);
 /* USER CODE BEGIN Private defines */
 

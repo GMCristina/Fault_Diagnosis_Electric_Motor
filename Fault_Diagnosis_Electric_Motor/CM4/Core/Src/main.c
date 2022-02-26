@@ -137,8 +137,21 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  uint32_t value_reg_32;
+
   ADE9000_Power();
+
   test_read_write_reg();
+
+
+  ADE9000_Setup();
+  HAL_Delay(2000);
+  printf("start buffer\r\n");
+
+  Start_Waveform_Buffer();
+  HAL_Delay(1000);
+
+
 
   /* USER CODE END 2 */
 
@@ -225,7 +238,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -314,24 +327,40 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, ADE9000_Reset_Pin|ADE9000_PM1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(ADE9000_CS_GPIO_Port, ADE9000_CS_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pins : PE11 PE14 */
-  GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_14;
+  /*Configure GPIO pins : ADE9000_Reset_Pin ADE9000_PM1_Pin */
+  GPIO_InitStruct.Pin = ADE9000_Reset_Pin|ADE9000_PM1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PG9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  /*Configure GPIO pin : ADE9000_IRQ1_Pin */
+  GPIO_InitStruct.Pin = ADE9000_IRQ1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(ADE9000_IRQ1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : ADE9000_CS_Pin */
+  GPIO_InitStruct.Pin = ADE9000_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(ADE9000_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : ADE9000_IRQ0_Pin */
+  GPIO_InitStruct.Pin = ADE9000_IRQ0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(ADE9000_IRQ0_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 }
 
@@ -339,6 +368,26 @@ static void MX_GPIO_Init(void)
 int __io_putchar(int ch) {
 	HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
 	return ch;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	// If the interrupt source is pin IRQ0
+	printf("int \r\n");
+	if (GPIO_Pin == ADE9000_IRQ0_Pin)
+	{
+		printf("IRQ0 interrupt\r\n");
+
+		uint32_t value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
+		  if((value_reg_32 & 0x00020000)!=0){
+			  printf("Fullpage interrupt\r\n");
+			 value_reg_32 = value_reg_32 & 0x00020000;
+			 ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+		  }
+	}
+	if (GPIO_Pin == ADE9000_IRQ1_Pin)
+		{
+			printf("IRQ1 interrupt\r\n");
+		}
 }
 /* USER CODE END 4 */
 

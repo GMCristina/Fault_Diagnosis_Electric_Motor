@@ -39,6 +39,7 @@ void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data);
 
 void ADE9000_Setup(void);
 void ADE9000_Power(void);
+void Start_Waveform_Buffer(void);
 
 void test_read_write_reg(void);
 
