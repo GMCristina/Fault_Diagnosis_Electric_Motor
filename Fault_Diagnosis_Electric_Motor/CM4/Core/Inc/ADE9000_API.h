@@ -15,6 +15,8 @@
 #define TIMEOUT_SPI 100
 //SPI with 16 bit data frame
 #define SIZE_16 1
+#define BURST_READ_N 256
+#define WAVEFORM_BUFFER_START_ADDR 0x800
 
 
 extern SPI_HandleTypeDef hspi3;
@@ -42,6 +44,11 @@ void ADE9000_Power(void);
 void Start_Waveform_Buffer(void);
 
 void test_read_write_reg(void);
+
+void ADE9000_SPI_Burst_Read_one_ch(uint16_t Address, uint16_t n, int32_t* data);
+void ADE9000_SPI_Burst_Read_two_ch(uint16_t Address, uint16_t n, int32_t* i, int32_t* v);
+void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32_t* ib, int32_t* ic, int32_t* in, int32_t* va, int32_t* vb, int32_t* vc);
+void ADE9000_Conv_ADC(int32_t* data, uint32_t n);
 
 
 
