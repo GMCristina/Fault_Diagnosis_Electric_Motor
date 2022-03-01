@@ -153,7 +153,7 @@ int main(void)
   //each adc sample = [4 extended sign bits]:[24bit data]:[0000]
 */
 
-/*
+
 
   int32_t ia [BURST_READ_N],ib [BURST_READ_N],ic [BURST_READ_N],in [BURST_READ_N];
   int32_t va[BURST_READ_N],vb[BURST_READ_N],vc [BURST_READ_N];
@@ -165,7 +165,7 @@ int main(void)
   ADE9000_Conv_ADC(va,BURST_READ_N);
   ADE9000_Conv_ADC(vb,BURST_READ_N);
   ADE9000_Conv_ADC(vc,BURST_READ_N);
-*/
+
 
 /*
   int32_t va [BURST_READ_N];
@@ -174,12 +174,12 @@ int main(void)
 */
 
 
-
+/*
 int32_t va [BURST_READ_N], ia [BURST_READ_N];
 ADE9000_SPI_Burst_Read_two_ch(WAVEFORM_BUFFER_START_ADDR, BURST_READ_N,ia,va);
 ADE9000_Conv_ADC(va,BURST_READ_N);
 ADE9000_Conv_ADC(ia,BURST_READ_N);
-
+*/
 
 
 

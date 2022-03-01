@@ -12,6 +12,8 @@
 #include "main.h"
 #include <stdio.h>
 
+#define ACQUISITION_PERIOD 1 //seconds
+
 #define TIMEOUT_SPI 100
 //SPI with 16 bit data frame
 #define SIZE_16 1
@@ -19,11 +21,11 @@
 #define WAVEFORM_BUFFER_START_ADDR 0x800
 
 //Waveform buffer config
-//0 disable, 1 enable
-#define WF_IN_EN 0b0
+//0 disable, 1 enable IN
+#define WF_IN_EN 0b1
 
 //00(sinc4),10(sinc4+lpf),11(pcf)
-#define WF_SRC 0b00
+#define WF_SRC 0b10
 
 //00(stop full), 01(stop trigger)
 //10(stop trigger center),11(save add trigger)
@@ -38,7 +40,7 @@
 // 1010(ib), 1011(vb)
 // 1100(ic), 1101(vc)
 // 1110(in), 1111(single add)
-#define BURST_CHAN 0b0001
+#define BURST_CHAN 0b0000
 
 extern SPI_HandleTypeDef hspi3;
 
