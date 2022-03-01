@@ -159,12 +159,20 @@ void ADE9000_Setup(){
 	//Res,Res,Source
 	//Mode,Fixed/resample,Avvio
 	//channel burst
+
 	//value_reg_16 = 0x0028; //no IN, sinc4, stop full, fixed rate, stop, solo IA (1000)
 	//value_reg_16 = 0x1020;//IN, sinc4, stop full, fixed rate, stop, tutti canali(0000)
 	//value_reg_16 = 0x0029; //no IN, sinc4, stop full, fixed rate, stop, solo VA (1001)
-	value_reg_16 = 0x0021; //no IN, sinc4, stop full, fixed rate, stop, solo Ia e VA (0001)
-	//10 Sinc4 + IIR LPF output at 8 kSPS
+	//value_reg_16 = 0x0021; //no IN, sinc4, stop full, fixed rate, stop, solo Ia e VA (0001)
 	//value_reg_16 = 0x0221; //no IN, LPF, stop full, fixed rate, stop, solo Ia e VA (0001)
+
+	value_reg_16 = 0x0000;
+	value_reg_16 = value_reg_16 | (WF_IN_EN<<12);
+	value_reg_16 = value_reg_16 | (WF_SRC<<8);
+	value_reg_16 = value_reg_16 | (WF_MODE<<6);
+	value_reg_16 = value_reg_16 | (WF_CAP_SEL<<5);
+	value_reg_16 = value_reg_16 | BURST_CHAN;
+
 	ADE9000_SPI_Write_16(ADDR_WFB_CFG ,value_reg_16);
 
 	//WFB_PG_IRQEN
@@ -195,8 +203,13 @@ void Start_Waveform_Buffer() {
 	//Res,Res,Source
 	//Mode,Fixed/resample,Avvio
 	//channel burst
-	value_reg_16 = 0x0038; //no IN, sinc4, stop full, fixed rate, start, solo IA
+	value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_CFG);
+	value_reg_16 = (value_reg_16|0x0010);
 	ADE9000_SPI_Write_16(ADDR_WFB_CFG ,value_reg_16);
+
+	//check
+	value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_CFG);
+	printf("WFB_CFG (dopo start) = %x \r\n", value_reg_16);
 
 }
 
@@ -344,6 +357,7 @@ void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32
 }
 
 void ADE9000_Conv_ADC(int32_t* data, uint32_t n){
+	printf("convertion\r\n");
 	int32_t app;
 	for(uint32_t i=0; i<n; i++){
 		app = *(data + i);

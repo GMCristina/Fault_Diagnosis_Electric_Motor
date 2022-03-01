@@ -18,6 +18,27 @@
 #define BURST_READ_N 256
 #define WAVEFORM_BUFFER_START_ADDR 0x800
 
+//Waveform buffer config
+//0 disable, 1 enable
+#define WF_IN_EN 0b0
+
+//00(sinc4),10(sinc4+lpf),11(pcf)
+#define WF_SRC 0b00
+
+//00(stop full), 01(stop trigger)
+//10(stop trigger center),11(save add trigger)
+#define WF_MODE 0b00
+
+//0(resampled),1(fixed rate)
+#define WF_CAP_SEL 0b1
+
+// 0000(all)
+// 0001 (ia,va), 0010(ib,vb), 0011(ic,vc)
+// 1000(ia), 1001(va)
+// 1010(ib), 1011(vb)
+// 1100(ic), 1101(vc)
+// 1110(in), 1111(single add)
+#define BURST_CHAN 0b0001
 
 extern SPI_HandleTypeDef hspi3;
 
