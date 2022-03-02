@@ -8,6 +8,70 @@
 #include "ADE9000_API.h"
 #include "main.h"
 
+int8_t flag_read = 0;
+int32_t n_int = 0;
+
+void ADE9000_Setup(){
+	uint32_t value_reg_32;
+	uint16_t value_reg_16;
+
+	// ADDR_PGA_GAIN
+	value_reg_16 = 0x0000; //gain all channel 1
+	ADE9000_SPI_Write_16(ADDR_PGA_GAIN,value_reg_16);
+
+	//CONFIG2
+	value_reg_16 = 	0x0C00;			//Default High pass corner frequency of 1.25Hz
+	ADE9000_SPI_Write_16(ADDR_CONFIG2,value_reg_16);
+
+	//ACCMODE
+	value_reg_16= 0x0000;			//3P4W Wye configuration
+	ADE9000_SPI_Write_16(ADDR_ACCMODE,value_reg_16);
+
+	//WFB_CFG
+	//value_reg_16 = 0x0028; //no IN, sinc4, stop full, fixed rate, stop, solo IA (1000)
+	//value_reg_16 = 0x1020;//IN, sinc4, stop full, fixed rate, stop, tutti canali(0000)
+	//value_reg_16 = 0x0029; //no IN, sinc4, stop full, fixed rate, stop, solo VA (1001)
+	//value_reg_16 = 0x0021; //no IN, sinc4, stop full, fixed rate, stop, solo Ia e VA (0001)
+	//value_reg_16 = 0x0221; //no IN, LPF, stop full, fixed rate, stop, solo Ia e VA (0001)
+
+	value_reg_16 = 0x0000;
+	value_reg_16 = value_reg_16 | (WF_IN_EN<<12);
+	value_reg_16 = value_reg_16 | (WF_SRC<<8);
+	value_reg_16 = value_reg_16 | (WF_MODE<<6);
+	value_reg_16 = value_reg_16 | (WF_CAP_SEL<<5);
+	value_reg_16 = value_reg_16 | BURST_CHAN;
+
+	ADE9000_SPI_Write_16(ADDR_WFB_CFG ,value_reg_16);
+
+	//WFB_PG_IRQEN
+	// 1 bit per pagina: pag15-pag0
+	//fa PageFULL in STATUS0
+
+	//value_reg_16 = 0x8000; //page 15
+	//value_reg_16 = 0xFFFF; //all page
+	value_reg_16 = 0x8080; //page 15, page 7 (metà)
+	//value_reg_16 = 0x0000; //no int
+	ADE9000_SPI_Write_16(ADDR_WFB_PG_IRQEN,value_reg_16);
+
+	//ADDR_MASK0
+	//IRQ0 per full page (bit 17)
+	//quando una delle pagine settate è piena
+	value_reg_32 = 0x00020000;
+	ADE9000_SPI_Write_32(ADDR_MASK0,value_reg_32);
+	value_reg_32 = ADE9000_SPI_Read_32(ADDR_MASK0);
+
+	//ADDR_MASK1
+	//disable all int
+	value_reg_32 = 0x00000000;
+	ADE9000_SPI_Write_32(ADDR_MASK1,value_reg_32);
+	value_reg_32 = ADE9000_SPI_Read_32(ADDR_MASK1);
+
+	//ADDR_RUN
+	//Start ADE9000 measurement
+	value_reg_16 = 0x0001;
+	ADE9000_SPI_Write_16(ADDR_RUN, value_reg_16);
+}
+
 //power-on sequence
 void ADE9000_Power(void){
 	//PM1 pin
@@ -138,79 +202,19 @@ void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data){
 
 }
 
-void ADE9000_Setup(){
-	uint32_t value_reg_32;
-	uint16_t value_reg_16;
 
-	// ADDR_PGA_GAIN
-	value_reg_16 = 0x0000; //gain all channel 1
-	ADE9000_SPI_Write_16(ADDR_PGA_GAIN,value_reg_16);
-
-	//CONFIG2
-	value_reg_16 = 	0x0C00;			//Default High pass corner frequency of 1.25Hz
-	ADE9000_SPI_Write_16(ADDR_CONFIG2,value_reg_16);
-
-	//ACCMODE
-	value_reg_16= 0x0000;			//3P4W Wye configuration
-	ADE9000_SPI_Write_16(ADDR_ACCMODE,value_reg_16);
-
-	//WFB_CFG
-	//Res,Res,Res,IN
-	//Res,Res,Source
-	//Mode,Fixed/resample,Avvio
-	//channel burst
-
-	//value_reg_16 = 0x0028; //no IN, sinc4, stop full, fixed rate, stop, solo IA (1000)
-	//value_reg_16 = 0x1020;//IN, sinc4, stop full, fixed rate, stop, tutti canali(0000)
-	//value_reg_16 = 0x0029; //no IN, sinc4, stop full, fixed rate, stop, solo VA (1001)
-	//value_reg_16 = 0x0021; //no IN, sinc4, stop full, fixed rate, stop, solo Ia e VA (0001)
-	//value_reg_16 = 0x0221; //no IN, LPF, stop full, fixed rate, stop, solo Ia e VA (0001)
-
-	value_reg_16 = 0x0000;
-	value_reg_16 = value_reg_16 | (WF_IN_EN<<12);
-	value_reg_16 = value_reg_16 | (WF_SRC<<8);
-	value_reg_16 = value_reg_16 | (WF_MODE<<6);
-	value_reg_16 = value_reg_16 | (WF_CAP_SEL<<5);
-	value_reg_16 = value_reg_16 | BURST_CHAN;
-
-	ADE9000_SPI_Write_16(ADDR_WFB_CFG ,value_reg_16);
-
-	//WFB_PG_IRQEN
-	// 1 bit per pagina: pag15-pag0
-	//fa PageFULL in STATUS0
-	value_reg_16 = 0x8000; //page 15
-	ADE9000_SPI_Write_16(ADDR_WFB_PG_IRQEN,value_reg_16);
-
-	//ADDR_MASK0
-	//IRQ0 per full page (bit 17)
-	value_reg_32 = 0x00020000;
-	ADE9000_SPI_Write_32(ADDR_MASK0,value_reg_32);
-	value_reg_32 = ADE9000_SPI_Read_32(ADDR_MASK0);
-
-	//ADDR_MASK1
-	//disable all int
-	value_reg_32 = 0x00000000;
-	ADE9000_SPI_Write_32(ADDR_MASK1,value_reg_32);
-	value_reg_32 = ADE9000_SPI_Read_32(ADDR_MASK1);
-
-	value_reg_16 = 0x0001;
-	ADE9000_SPI_Write_16(ADDR_RUN, value_reg_16);
-}
 void Start_Waveform_Buffer() {
 	uint16_t value_reg_16;
-	//WFB_CFG
-	//Res,Res,Res,IN
-	//Res,Res,Source
-	//Mode,Fixed/resample,Avvio
-	//channel burst
 	value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_CFG);
 	value_reg_16 = (value_reg_16|0x0010);
 	ADE9000_SPI_Write_16(ADDR_WFB_CFG ,value_reg_16);
+}
 
-	//check
+void Stop_Waveform_Buffer(){
+	uint16_t value_reg_16;
 	value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_CFG);
-	printf("WFB_CFG (dopo start) = %x \r\n", value_reg_16);
-
+	value_reg_16 = (value_reg_16 & 0xFFEF);
+	ADE9000_SPI_Write_16(ADDR_WFB_CFG ,value_reg_16);
 }
 
 void test_read_write_reg(){
@@ -357,12 +361,13 @@ void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32
 }
 
 void ADE9000_Conv_ADC(int32_t* data, uint32_t n){
-	printf("convertion\r\n");
-	int32_t app;
+	printf("conv\r\n");
+	int32_t app, err = 0;
 	for(uint32_t i=0; i<n; i++){
 		app = *(data + i);
 		if((app & 0x0000000F)!=0) {
-			printf("Error ADC code\r\n");
+			//printf("Error code\r\n");
+			err +=1;
 		}
 		if ((app &0xF0000000)==0xF0000000){
 			app = ((app>>4)|0xF0000000);
@@ -370,9 +375,12 @@ void ADE9000_Conv_ADC(int32_t* data, uint32_t n){
 			app = ((app>>4)|0x00000000);
 		}
 		else {
-			printf("Error ADC code\r\n");
+			//printf("Error code\r\n");
+			err +=1;
 		}
 		*(data+i) = app;
+
 	}
+	printf("errori: %d\r\n",err);
 
 }

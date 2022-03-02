@@ -13,23 +13,32 @@
 #include <stdio.h>
 
 #define ACQUISITION_PERIOD 1 //seconds
+#define ACQUISITION_FREQ 32 //kHZ
+//16 pagine, 16 campioni per pagina
+//32KHz 8ms tot, 0.5ms per pagina
+//8KHz 32ms tot, 2ms per pagina
+// 1 secondo con 32KHz
+#define N_BUFFER 125 //1sec/8ms
+#define N_SAMPLE 32000 //n_buffer x dim_buffer(256)
+#define BURST_READ_N 128 // una pagina alla volta
+
 
 #define TIMEOUT_SPI 100
 //SPI with 16 bit data frame
 #define SIZE_16 1
-#define BURST_READ_N 256
+#define WAVEFORM_BUFFER_DIM 256
 #define WAVEFORM_BUFFER_START_ADDR 0x800
 
 //Waveform buffer config
 //0 disable, 1 enable IN
-#define WF_IN_EN 0b1
+#define WF_IN_EN 0b0
 
 //00(sinc4),10(sinc4+lpf),11(pcf)
-#define WF_SRC 0b10
+#define WF_SRC 0b00
 
 //00(stop full), 01(stop trigger)
 //10(stop trigger center),11(save add trigger)
-#define WF_MODE 0b00
+#define WF_MODE 0b01
 
 //0(resampled),1(fixed rate)
 #define WF_CAP_SEL 0b1
@@ -40,9 +49,11 @@
 // 1010(ib), 1011(vb)
 // 1100(ic), 1101(vc)
 // 1110(in), 1111(single add)
-#define BURST_CHAN 0b0000
+#define BURST_CHAN 0b0001
 
 extern SPI_HandleTypeDef hspi3;
+extern int8_t flag_read;
+extern int32_t n_int;
 
 union ADE_DATA_32{
 	uint8_t data_8[4];
@@ -65,6 +76,7 @@ void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data);
 void ADE9000_Setup(void);
 void ADE9000_Power(void);
 void Start_Waveform_Buffer(void);
+void Stop_Waveform_Buffer(void);
 
 void test_read_write_reg(void);
 
