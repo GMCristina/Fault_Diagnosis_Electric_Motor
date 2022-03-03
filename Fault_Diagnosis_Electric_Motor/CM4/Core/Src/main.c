@@ -177,29 +177,30 @@ int main(void)
 
   int32_t va[N_SAMPLE], ia[N_SAMPLE];
   uint16_t index = 0;
+  printf("%d,%d,%d",N_BUFFER, N_SAMPLE,BURST_READ_N);
 
   uint32_t start;
-  while(index != N_SAMPLE){
+  while(index < N_SAMPLE){
  		  while(flag_read == 0){}
-		  //uint16_t value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
-		  //value_reg_16 = (value_reg_16>>12)&0x0F;
-		  //printf("pg: %i\r\n",value_reg_16);
 		  printf("nint: %d", n_int);
  		  flag_read = 0;
  		  uint32_t value_reg_32 = 0x00020000;
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+		  uint16_t value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+		  value_reg_16 = (value_reg_16>>12)&0x0F;
+		  printf("pg: %i\r\n",value_reg_16);
  		  start = WAVEFORM_BUFFER_START_ADDR;
  		  ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
  		  printf("Read from 0x%x\r\n", start);
  		  printf("Write on index %d\r\n",index);
  		  index += BURST_READ_N;
  		  while(flag_read == 0){}
- 		  //value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
- 		  //value_reg_16 = (value_reg_16>>12)&0x0F;
- 		  //printf("pg: %i\r\n",value_reg_16);
  		  printf("nint: %d", n_int);
  		  flag_read = 0;
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+ 		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+ 		  value_reg_16 = (value_reg_16>>12)&0x0F;
+ 		  printf("pg: %i\r\n",value_reg_16);
  		  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
  		  ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
  		  printf("Read from 0x%x\r\n", start);
@@ -212,7 +213,7 @@ int main(void)
   ADE9000_Conv_ADC(ia,N_SAMPLE);
 
   HAL_Delay(5000);
-  printf("\r\nVA,IA\r\n");
+  printf("VA,IA\r\n");
   for(uint32_t i = 0; i<N_SAMPLE; i++){
 	  printf("%d,%d\r\n",va[i],ia[i]);
   }

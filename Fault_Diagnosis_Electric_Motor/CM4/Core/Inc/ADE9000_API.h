@@ -13,14 +13,13 @@
 #include <stdio.h>
 
 #define ACQUISITION_PERIOD 1 //seconds
-#define ACQUISITION_FREQ 32 //kHZ
+#define ACQUISITION_FREQ 8000 //HZ
 //16 pagine, 16 campioni per pagina
 //32KHz 8ms tot, 0.5ms per pagina
 //8KHz 32ms tot, 2ms per pagina
-// 1 secondo con 32KHz
-#define N_BUFFER 125 //1sec/8ms
-#define N_SAMPLE 32000 //n_buffer x dim_buffer(256)
-#define BURST_READ_N 128 // una pagina alla volta
+#define N_BUFFER ((ACQUISITION_PERIOD*ACQUISITION_FREQ)/WAVEFORM_BUFFER_DIM + ((ACQUISITION_PERIOD*ACQUISITION_FREQ)%WAVEFORM_BUFFER_DIM!=0))
+#define N_SAMPLE (WAVEFORM_BUFFER_DIM*N_BUFFER) //n_buffer x dim_buffer(256)
+#define BURST_READ_N (WAVEFORM_BUFFER_DIM/2) // metà buffer (16samp*8pagine)
 
 
 #define TIMEOUT_SPI 100
@@ -34,7 +33,7 @@
 #define WF_IN_EN 0b0
 
 //00(sinc4),10(sinc4+lpf),11(pcf)
-#define WF_SRC 0b00
+#define WF_SRC 0b10
 
 //00(stop full), 01(stop trigger)
 //10(stop trigger center),11(save add trigger)

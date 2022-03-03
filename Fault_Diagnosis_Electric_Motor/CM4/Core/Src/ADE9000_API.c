@@ -361,7 +361,7 @@ void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32
 }
 
 void ADE9000_Conv_ADC(int32_t* data, uint32_t n){
-	printf("conv\r\n");
+	//printf("conv\r\n");
 	int32_t app, err = 0;
 	for(uint32_t i=0; i<n; i++){
 		app = *(data + i);
