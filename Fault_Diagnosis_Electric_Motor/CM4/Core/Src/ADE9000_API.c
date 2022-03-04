@@ -113,10 +113,10 @@ uint16_t ADE9000_SPI_Read_16(uint16_t Address){
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	//Send address
-	ret = HAL_SPI_Transmit(&hspi3,addr.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,addr.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//Receive data
-	ret = HAL_SPI_Receive(&hspi3,data.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Receive(&hspi1,data.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//CS off
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
@@ -139,11 +139,11 @@ uint32_t ADE9000_SPI_Read_32(uint16_t Address){
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	//Send address
-	ret = HAL_SPI_Transmit(&hspi3,addr.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,addr.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//Receive data
-	ret = HAL_SPI_Receive(&hspi3,data.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-	ret = HAL_SPI_Receive(&hspi3,data.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Receive(&hspi1,data.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Receive(&hspi1,data.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//CS off
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
@@ -165,11 +165,11 @@ void ADE9000_SPI_Write_16(uint16_t Address, uint16_t Data){
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	//Send address
-	ret = HAL_SPI_Transmit(&hspi3,addr.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,addr.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//Send data
 	data.data_16 = Data;
-	ret = HAL_SPI_Transmit(&hspi3,data.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,data.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//CS off
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
@@ -190,12 +190,12 @@ void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data){
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	//Send address
-	ret = HAL_SPI_Transmit(&hspi3,addr.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,addr.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//Send data
 	data.data_32 = Data;
-	ret = HAL_SPI_Transmit(&hspi3,data.data_8 +2,SIZE_16,TIMEOUT_SPI);
-	ret = HAL_SPI_Transmit(&hspi3,data.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,data.data_8 +2,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,data.data_8,SIZE_16,TIMEOUT_SPI);
 
 	//CS off
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
@@ -236,6 +236,10 @@ void test_read_write_reg(){
 	data_16 = ADE9000_SPI_Read_16(ADDR_RUN);
 	printf("ADDR_RUN = %x \r\n",  data_16);
 
+	data_32 = 0x00020000;
+	ADE9000_SPI_Write_32(ADDR_MASK0,data_32);
+	data_32 = ADE9000_SPI_Read_32(ADDR_MASK0);
+
 	//Lettura reg SPI
 	data_16 = ADE9000_SPI_Read_16(ADDR_LAST_CMD);
 	printf("ADDR_LAST_CMD = %x \r\n",  data_16);
@@ -267,12 +271,12 @@ void ADE9000_SPI_Burst_Read_one_ch(uint16_t Address, uint16_t n, int32_t* data){
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	//Send address
-	ret = HAL_SPI_Transmit(&hspi3,addr.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,addr.data_8,SIZE_16,TIMEOUT_SPI);
 
 	for(uint16_t i=0; i<n; i++){
 		//Receive data
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(data + i)= app.data_32;
 	}
 
@@ -293,18 +297,18 @@ void ADE9000_SPI_Burst_Read_two_ch(uint16_t Address, uint16_t n, int32_t* i, int
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	//Send address
-	ret = HAL_SPI_Transmit(&hspi3,addr.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,addr.data_8,SIZE_16,TIMEOUT_SPI);
 
 	for(uint16_t j=0; j<n; j++){
 		//Receive data
 
 		//NB: CONTROLLARE ORDINE (REGISTRI è I,V)
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(i + j)= app.data_32;
 
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(v + j)= app.data_32;
 	}
 
@@ -325,33 +329,33 @@ void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	//Send address
-	ret = HAL_SPI_Transmit(&hspi3,addr.data_8,SIZE_16,TIMEOUT_SPI);
+	ret = HAL_SPI_Transmit(&hspi1,addr.data_8,SIZE_16,TIMEOUT_SPI);
 
 	for(uint16_t i=0; i<n; i++){
 		//Receive data
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(ia + i)= app.data_32;
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(va + i)= app.data_32;
 
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(ib + i)= app.data_32;
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(vb + i)= app.data_32;
 
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(ic + i)= app.data_32;
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(vc + i)= app.data_32;
 
-		ret = HAL_SPI_Receive(&hspi3,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
-		ret = HAL_SPI_Receive(&hspi3,app.data_8,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8 + 2,SIZE_16,TIMEOUT_SPI);
+		ret = HAL_SPI_Receive(&hspi1,app.data_8,SIZE_16,TIMEOUT_SPI);
 		*(in + i)= app.data_32;
 
 	}

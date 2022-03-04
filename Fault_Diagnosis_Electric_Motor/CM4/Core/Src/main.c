@@ -72,7 +72,7 @@ ETH_TxPacketConfig TxConfig;
 
 ETH_HandleTypeDef heth;
 
-SPI_HandleTypeDef hspi3;
+SPI_HandleTypeDef hspi1;
 
 UART_HandleTypeDef huart3;
 
@@ -82,8 +82,8 @@ UART_HandleTypeDef huart3;
 
 /* Private function prototypes -----------------------------------------------*/
 static void MX_GPIO_Init(void);
-static void MX_SPI3_Init(void);
 static void MX_USART3_UART_Init(void);
+static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -133,15 +133,24 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_SPI3_Init();
   MX_USART3_UART_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
   ADE9000_Power();
 
+  //test_read_write_reg();
+
   ADE9000_Setup();
 
-  printf("Start buffer\r\n");
+  printf("%d,%d,%d\r\n",N_BUFFER, N_SAMPLE,BURST_READ_N);
+
+  int32_t va[N_SAMPLE], ia[N_SAMPLE];
+  uint16_t index = 0;
+  uint32_t start;
+  uint32_t value_reg_32 = 0x00020000;
+  uint16_t value_reg_16;
+
   Start_Waveform_Buffer();
   //HAL_Delay(2000);
 
@@ -175,40 +184,56 @@ int main(void)
 	Stop_Waveform_Buffer();
 */
 
-  int32_t va[N_SAMPLE], ia[N_SAMPLE];
-  uint16_t index = 0;
-  printf("%d,%d,%d",N_BUFFER, N_SAMPLE,BURST_READ_N);
-
-  uint32_t start;
   while(index < N_SAMPLE){
  		  while(flag_read == 0){}
-		  printf("nint: %d", n_int);
+ 		 //uint32_t tickstart = HAL_GetTick();
+
+		  //printf("nint: %d\t", n_int);
  		  flag_read = 0;
- 		  uint32_t value_reg_32 = 0x00020000;
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
-		  uint16_t value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+
+		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
 		  value_reg_16 = (value_reg_16>>12)&0x0F;
 		  printf("pg: %i\r\n",value_reg_16);
  		  start = WAVEFORM_BUFFER_START_ADDR;
- 		  ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
- 		  printf("Read from 0x%x\r\n", start);
- 		  printf("Write on index %d\r\n",index);
+
+
+
+ 		 //ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,ia + index);
+ 		 ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
+
+ 		  //printf("1 index %d\r\n",index);
  		  index += BURST_READ_N;
+ 		/*
+ 		 uint32_t tickend = HAL_GetTick();
+ 		 uint32_t ntick = tickend-tickstart;
+ 		 printf("TIME: %d MS\r\n",ntick);
+ 		*/
  		  while(flag_read == 0){}
- 		  printf("nint: %d", n_int);
+
+  		 //tickstart = HAL_GetTick();
+ 		  //printf("nint: %d\t", n_int);
  		  flag_read = 0;
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
  		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
  		  value_reg_16 = (value_reg_16>>12)&0x0F;
  		  printf("pg: %i\r\n",value_reg_16);
  		  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
- 		  ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
- 		  printf("Read from 0x%x\r\n", start);
- 		  printf("Write on index %d\r\n",index);
+
+
+ 		 //ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,ia + index);
+ 		 ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
+
+ 		 //printf("2 index %d\r\n",index);
  		 index += BURST_READ_N;
+/*
+   		tickend = HAL_GetTick();
+   		 ntick = tickend-tickstart;
+   		 printf("TIME: %d MS\r\n",ntick);
+*/
+
  }
   Stop_Waveform_Buffer();
-  printf("Conv 1 sec\r\n");
   ADE9000_Conv_ADC(va,N_SAMPLE);
   ADE9000_Conv_ADC(ia,N_SAMPLE);
 
@@ -229,30 +254,6 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-
-/*
-	  uint32_t start;
-	  while(index != N_SAMPLE){
-		  while(flag_read == -1){}
-		  if(flag_read ==7) {
-			  start = WAVEFORM_BUFFER_START_ADDR;
-		  } else if(flag_read ==15){
-			  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
-		  } else {printf("Errore\r\n");}
-		  flag_read = -1;
-
-		  printf("Read from 0x%x\r\n", start);
-		  ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
-		  printf("Write on index %d\r\n",index);
-		  ADE9000_Conv_ADC(va + index,BURST_READ_N);
-		  ADE9000_Conv_ADC(ia + index,BURST_READ_N);
-		  index += BURST_READ_N;
-	  }
-	  printf("End 1 sec\r\n");
-	  Stop_Waveform_Buffer();
-	  HAL_Delay(5000);
-	  HAL_Delay(5000);
-*/
   }
   /* USER CODE END 3 */
 }
@@ -307,50 +308,50 @@ void MX_ETH_Init(void)
 }
 
 /**
-  * @brief SPI3 Initialization Function
+  * @brief SPI1 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_SPI3_Init(void)
+static void MX_SPI1_Init(void)
 {
 
-  /* USER CODE BEGIN SPI3_Init 0 */
+  /* USER CODE BEGIN SPI1_Init 0 */
 
-  /* USER CODE END SPI3_Init 0 */
+  /* USER CODE END SPI1_Init 0 */
 
-  /* USER CODE BEGIN SPI3_Init 1 */
+  /* USER CODE BEGIN SPI1_Init 1 */
 
-  /* USER CODE END SPI3_Init 1 */
-  /* SPI3 parameter configuration*/
-  hspi3.Instance = SPI3;
-  hspi3.Init.Mode = SPI_MODE_MASTER;
-  hspi3.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi3.Init.DataSize = SPI_DATASIZE_16BIT;
-  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
-  hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi3.Init.CRCPolynomial = 0x0;
-  hspi3.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
-  hspi3.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
-  hspi3.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
-  hspi3.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi3.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi3.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
-  hspi3.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
-  hspi3.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
-  hspi3.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
-  hspi3.Init.IOSwap = SPI_IO_SWAP_DISABLE;
-  if (HAL_SPI_Init(&hspi3) != HAL_OK)
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 0x0;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  hspi1.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+  hspi1.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+  hspi1.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi1.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi1.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+  hspi1.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+  hspi1.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+  hspi1.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+  hspi1.Init.IOSwap = SPI_IO_SWAP_DISABLE;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN SPI3_Init 2 */
+  /* USER CODE BEGIN SPI1_Init 2 */
 
-  /* USER CODE END SPI3_Init 2 */
+  /* USER CODE END SPI1_Init 2 */
 
 }
 
@@ -412,6 +413,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
@@ -468,9 +470,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 		//printf("IRQ0s\r\n");
 		flag_read = 1;
 		n_int ++;
-		  //uint16_t value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
-		  //value_reg_16 = (value_reg_16>>12)&0x0F;
-		  //printf("pgi: %i\r\n",value_reg_16);
+		//uint32_t value_reg_32 = 0x00020000;
+		//ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+		/*
+		  uint16_t value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+		  value_reg_16 = (value_reg_16>>12)&0x0F;
+		  printf("pgi: %i\r\n",value_reg_16);
+		  uint32_t value_reg_32 = 0x00020000;
+		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+		*/
 		//printf("IRQ0e\r\n");
 
 
