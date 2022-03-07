@@ -24,6 +24,8 @@
 /* USER CODE BEGIN Includes */
 #include "ADE9000_API.h"
 #include <stdio.h>
+#include <ADE9000CalibrationInputs.h>
+#include <ADE9000_Calibration.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -140,10 +142,30 @@ int main(void)
   ADE9000_Power();
 
   //test_read_write_reg();
+  setvbuf( stdin, NULL, _IONBF, 0 );
+  int a,c;
+  printf("\r\ninsert stringa\r\n");
+  scanf("%d",&a);
+  char str[20];
+  //fgets(str, 20, stdin);
+  //printf(str);
+
+  printf("letto %d\r\n",a);
+  fflush(stdin);
+  printf("insert char\r\n");
+  char d;
+  scanf("%c",&d);
+  printf("letto %c\r\n",d);
+  fflush(stdin);
+
+
+
 
   ADE9000_Setup();
 
   printf("%d,%d,%d\r\n",N_BUFFER, N_SAMPLE,BURST_READ_N);
+
+  ADE9000_Calibration();
 
   int32_t va[N_SAMPLE], ia[N_SAMPLE];
   uint16_t index = 0;
@@ -234,10 +256,17 @@ int main(void)
 
  }
   Stop_Waveform_Buffer();
-  ADE9000_Conv_ADC(va,N_SAMPLE);
-  ADE9000_Conv_ADC(ia,N_SAMPLE);
+  //ADE9000_Conv_ADC(va,N_SAMPLE);
+  //ADE9000_Conv_ADC(ia,N_SAMPLE);
 
   HAL_Delay(5000);
+  printf("VA,IA\r\n");
+  for(uint32_t i = 0; i<N_SAMPLE; i++){
+	  printf("%d,%d\r\n",va[i],ia[i]);
+  }
+
+  ADE9000_Conv_ADC(va,N_SAMPLE);
+  ADE9000_Conv_ADC(ia,N_SAMPLE);
   printf("VA,IA\r\n");
   for(uint32_t i = 0; i<N_SAMPLE; i++){
 	  printf("%d,%d\r\n",va[i],ia[i]);
@@ -461,6 +490,50 @@ static void MX_GPIO_Init(void)
 int __io_putchar(int ch) {
 	HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
 	return ch;
+}
+
+int __io_getchar(void)
+{
+
+	uint8_t ch;
+	// Clear the Overrun flag just before receiving the first character
+	__HAL_UART_CLEAR_OREFLAG(&huart3);
+
+	HAL_UART_Receive(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+
+	HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+
+	return ch;
+	/*
+	char data[4];
+		uint8_t ch, len = 1;
+
+		while(HAL_UART_Receive(&huart3, (uint8_t *)&ch, 1, 10) != HAL_OK)
+		{
+		}
+
+		memset(data, 0x00, 4);
+		switch(ch)
+		{
+			case '\r':
+			case '\n':
+				len = 2;
+				sprintf(data, "\r\n");
+				break;
+
+			case '\b':
+			case 0x7F:
+				len = 3;
+				sprintf(data, "\b \b");
+				break;
+
+			default:
+				data[0] = ch;
+				break;
+		}
+		HAL_UART_Transmit(&huart3, (uint8_t *)data, len, 10);
+		return ch;
+		*/
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {

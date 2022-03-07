@@ -23,6 +23,11 @@ void ADE9000_Setup(){
 	value_reg_16 = 	0x0C00;			//Default High pass corner frequency of 1.25Hz
 	ADE9000_SPI_Write_16(ADDR_CONFIG2,value_reg_16);
 
+	//CONFIG1
+	//EXT_REF off
+	value_reg_16 = 0x000000;
+	ADE9000_SPI_Write_16(ADDR_CONFIG1,value_reg_16);
+
 	//ACCMODE
 	value_reg_16= 0x0000;			//3P4W Wye configuration
 	ADE9000_SPI_Write_16(ADDR_ACCMODE,value_reg_16);
