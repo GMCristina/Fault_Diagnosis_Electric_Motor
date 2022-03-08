@@ -10,9 +10,9 @@
 
 
 /*User Inputs*/
-#define NOMINAL_INPUT_VOLTAGE 110       //Nominal Calibrating RMS Voltage on all phases (Vrms)
-#define NOMINAL_INPUT_CURRENT 5         //Nominal Calibrating RMS Current on all phases (Irms)
-#define INPUT_FREQUENCY 60              //Nominal Calibrating frequency. Used to calculate Omega for phase calibration.Ensure ACCMODE register is set to correct frequency
+#define NOMINAL_INPUT_VOLTAGE 230       //Nominal Calibrating RMS Voltage on all phases (Vrms)
+#define NOMINAL_INPUT_CURRENT 0.2         //Nominal Calibrating RMS Current on all phases (Irms)
+#define INPUT_FREQUENCY 50              //Nominal Calibrating frequency. Used to calculate Omega for phase calibration.Ensure ACCMODE register is set to correct frequency
 #define CALIBRATION_ANGLE_DEGREES 60	//Calibration Angle in Degrees.Used for phase calibration
 
 /*Transfer function*/
@@ -35,7 +35,7 @@ Voltage transfer function = 1/801= 0.001248 ~=0.00125
 #define DIVIDER_V 801
 
 #define CURRENT_TRANSFER_FUNCTION (R_BURDEN_I/CT_N)   //The RMS voltage at the ADC input pins per input RMS current  (V/A).(2500:1-->0.00408 with default burden resistors)
-#define VOLTAGE_TRANSFER_FUNCTION  (1/DIVIDER_V) //The RMS voltage at the ADC input pins per input RMS voltage (V/V)
+#define VOLTAGE_TRANSFER_FUNCTION  (1.0/DIVIDER_V) //The RMS voltage at the ADC input pins per input RMS voltage (V/V)
 /****************************************************************************************************************
 									Constants: Do not change 
 *****************************************************************************************************************/

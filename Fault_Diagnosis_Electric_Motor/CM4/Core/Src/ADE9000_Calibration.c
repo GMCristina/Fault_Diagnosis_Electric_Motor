@@ -54,16 +54,20 @@ void ADE9000_calibrate()
   char serialReadData;
   static int8_t calChannel = 0; //the channel being calibrated
   static int8_t channelCalLength = 1; //the length
-
+while(1){
   switch(CUR_STATE)
   {
       case CAL_START:       //Start
       printf("Starting calibration process. Select one of the following {Start (Y/y) OR Abort(Q/q) OR Restart (R/r)}:\r\n");
       scanf("%c",&serialReadData);
+      fflush(stdin);
+      printf("\r\n");
       if(serialReadData == 'Y' || serialReadData == 'y')
         {
            printf("Enter the Phase being calibrated:{Phase A(A/a) OR Phase B(B/b) OR Phase C(C/c) OR Neutral(N/n) OR All Phases(D/d)}:\r\n");
            scanf("%c",&serialReadData);
+           fflush(stdin);
+           printf("\r\n");
            if(serialReadData == 'A' || serialReadData == 'a')
               {
                 printf("Calibrating Phase A:\r\n");
@@ -101,7 +105,7 @@ void ADE9000_calibrate()
               }
 
            CUR_STATE=CAL_VI_CALIBRATE;
-           printf("Starting calibration with %d Vrms and %d Arms\r\n",NOMINAL_INPUT_VOLTAGE,NOMINAL_INPUT_CURRENT);
+           printf("Starting calibration with %f Vrms and %f Arms\r\n",NOMINAL_INPUT_VOLTAGE,NOMINAL_INPUT_CURRENT);
            serialReadData=' ';
            break;
         }
@@ -141,10 +145,14 @@ void ADE9000_calibrate()
       case CAL_PHASE_CALIBRATE:
       printf("Perform Phase calibration: Yes(Y/y) OR No (N/n): \r\n");
       scanf("%c",&serialReadData);
+      fflush(stdin);
+      printf("\r\n");
       if(serialReadData == 'Y' || serialReadData == 'y')
         {
             printf("Ensure Power factor is 0.5 lagging such that Active and Reactive energies are positive: Continue: Yes(Y/y) OR Restart (R/r): \r\n");
             scanf("%c",&serialReadData);
+            fflush(stdin);
+            printf("\r\n");
             if(serialReadData == 'Y' || serialReadData == 'y')
               {
             	ADE9000_phase_calibrate(&xPhcal_registers[calChannel],&xPhcal_register_address[calChannel], &accumulatedActiveEnergy_registers[calChannel], &accumulatedReactiveEnergy_registers[calChannel], channelCalLength);     //Calculate xPHCAL
@@ -183,6 +191,8 @@ void ADE9000_calibrate()
       printf("Starting Power Gain calibration\r\n");
       printf("Enter the Power Factor of inputs for xPGAIN calculation: 1(1) OR CalibratingAnglePF(0): \r\n");
       scanf("%c",&serialReadData);
+      fflush(stdin);
+      printf("\r\n");
       if(serialReadData == '1')
         {
            calPf=1;
@@ -223,12 +233,15 @@ void ADE9000_calibrate()
       break;
 
       case CAL_COMPLETE:
+    	  printf("Calibration completed\r\n");
+    	  return;
       break;
 
       default:
       break;
 
   }
+}
 
 }
 
@@ -249,7 +262,7 @@ void ADE9000_iGain_calibrate(int32_t *igainReg, int32_t *igainRegAddress, int32_
       temp= (((float)expectedCodes/(float)actualCodes)-1)* 134217728;  //calculate the gain.
       igainReg[i] = (int32_t) temp; //Round off
       printf("Channel %d\r\n",i+1);
-      printf("Actual IRMS Code: %x ",actualCodes);
+      printf("Actual IRMS Code: %x \r\n ",actualCodes);
       printf("Current Gain Register: %x \r\n",igainReg[i]);
 
     }
