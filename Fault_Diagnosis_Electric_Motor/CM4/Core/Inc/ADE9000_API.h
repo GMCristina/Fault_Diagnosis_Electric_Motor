@@ -21,6 +21,19 @@
 #define N_SAMPLE (WAVEFORM_BUFFER_DIM*N_BUFFER) //n_buffer x dim_buffer(256)
 #define BURST_READ_N (WAVEFORM_BUFFER_DIM/2) // metà buffer (16samp*8pagine)
 
+#define FULL_SCALE_CODE_SINC4 67076544
+#define FULL_SCALE_CODE_LPF 74481024
+#define V_REF 1
+#define FDT_V (1000.0/(4*200000+1000)) // 1/801
+#define N_CT 1500
+#define R_I (5.1 *2)
+#define FDT_I (R_I/N_CT)
+
+#define OFFSET_V 0.0//0.4 V
+#define OFFSET_I 0.0//0.08 A
+#define GAIN_V 1.0
+#define GAIN_I 1.0
+
 
 #define TIMEOUT_SPI 100
 //SPI with 16 bit data frame
@@ -50,10 +63,6 @@
 // 1110(in), 1111(single add)
 #define BURST_CHAN 0b0001
 
-extern SPI_HandleTypeDef hspi1;
-extern int8_t flag_read;
-extern int32_t n_int;
-
 union ADE_DATA_32{
 	uint8_t data_8[4];
 	uint16_t data_16[2];
@@ -65,6 +74,18 @@ union ADE_DATA_16{
 	uint16_t data_16;
 };
 
+union DATA{
+	uint8_t data_byte[4];
+	int32_t data_int;
+	float data_float;
+};
+
+extern SPI_HandleTypeDef hspi1;
+extern int8_t flag_read;
+extern int32_t n_int;
+
+extern union DATA va[N_SAMPLE],ia[N_SAMPLE];
+
 uint16_t ADE9000_SPI_Read_16(uint16_t Address);
 uint32_t ADE9000_SPI_Read_32(uint16_t Address);
 
@@ -74,6 +95,7 @@ void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data);
 
 void ADE9000_Setup(void);
 void ADE9000_Power(void);
+
 void Start_Waveform_Buffer(void);
 void Stop_Waveform_Buffer(void);
 
@@ -82,7 +104,11 @@ void test_read_write_reg(void);
 void ADE9000_SPI_Burst_Read_one_ch(uint16_t Address, uint16_t n, int32_t* data);
 void ADE9000_SPI_Burst_Read_two_ch(uint16_t Address, uint16_t n, int32_t* i, int32_t* v);
 void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32_t* ib, int32_t* ic, int32_t* in, int32_t* va, int32_t* vb, int32_t* vc);
-void ADE9000_Conv_ADC(int32_t* data, uint32_t n);
+
+void ADE9000_Conv_32_24(int32_t* data, uint32_t n);
+
+void ADE9000_Conv_ADC_I(union DATA* data_i, uint32_t n);
+void ADE9000_Conv_ADC_V(union DATA* data_v, uint32_t n);
 
 
 

@@ -151,44 +151,12 @@ int main(void)
   printf("fdti: %f\t fdtv: %f \r\n",CURRENT_TRANSFER_FUNCTION,VOLTAGE_TRANSFER_FUNCTION);
   //ADE9000_Calibration();
 
-  int32_t va[N_SAMPLE], ia[N_SAMPLE];
   uint16_t index = 0;
   uint32_t start;
   uint32_t value_reg_32 = 0x00020000;
   uint16_t value_reg_16;
 
   Start_Waveform_Buffer();
-  //HAL_Delay(2000);
-
-
-/*
-  int32_t ia [WAVEFORM_BUFFER_DIM],ib [WAVEFORM_BUFFER_DIM],ic [WAVEFORM_BUFFER_DIM],in [WAVEFORM_BUFFER_DIM];
-  int32_t va[WAVEFORM_BUFFER_DIM],vb[WAVEFORM_BUFFER_DIM],vc [WAVEFORM_BUFFER_DIM];
-  ADE9000_SPI_Burst_Read_all(WAVEFORM_BUFFER_START_ADDR, WAVEFORM_BUFFER_DIM,ia,ib,ic,in,va,vb,vc);
-  ADE9000_Conv_ADC(ia,WAVEFORM_BUFFER_DIM);
-  ADE9000_Conv_ADC(ib,WAVEFORM_BUFFER_DIM);
-  ADE9000_Conv_ADC(ic,WAVEFORM_BUFFER_DIM);
-  ADE9000_Conv_ADC(in,WAVEFORM_BUFFER_DIM);
-  ADE9000_Conv_ADC(va,WAVEFORM_BUFFER_DIM);
-  ADE9000_Conv_ADC(vb,WAVEFORM_BUFFER_DIM);
-  ADE9000_Conv_ADC(vc,WAVEFORM_BUFFER_DIM);
-
-*/
-
-/*
-	int32_t va [BURST_READ_N], ia [BURST_READ_N];
-	HAL_Delay(24);
-	uint32_t tickstart = HAL_GetTick();
-	ADE9000_SPI_Burst_Read_two_ch(WAVEFORM_BUFFER_START_ADDR, BURST_READ_N,ia,va);
-	uint32_t tickend = HAL_GetTick();
-	uint32_t ntick = tickend-tickstart;
-	printf("TIME: %d MS\r\n",ntick);
-	ADE9000_Conv_ADC(va,BURST_READ_N);
-	ADE9000_Conv_ADC(ia,BURST_READ_N);
-
-	HAL_Delay(24);
-	Stop_Waveform_Buffer();
-*/
 
   while(index < N_SAMPLE){
  		  while(flag_read == 0){}
@@ -206,7 +174,8 @@ int main(void)
 
 
  		 //ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,ia + index);
- 		 ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
+ 		 //ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
+ 		 ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
 
  		  //printf("1 index %d\r\n",index);
  		  index += BURST_READ_N;
@@ -228,7 +197,8 @@ int main(void)
 
 
  		 //ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,ia + index);
- 		 ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
+ 		// ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
+ 		ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
 
  		 //printf("2 index %d\r\n",index);
  		 index += BURST_READ_N;
@@ -240,13 +210,22 @@ int main(void)
 
  }
   Stop_Waveform_Buffer();
-  //ADE9000_Conv_ADC(va,N_SAMPLE);
-  //ADE9000_Conv_ADC(ia,N_SAMPLE);
+
+  /*
+  printf("VA,IA\r\n");
+  for(uint32_t i = 0; i<N_SAMPLE; i++){
+	  printf("%d,%d\r\n",va[i].data_int,ia[i].data_int);
+  }
+  */
+
+  ADE9000_Conv_ADC_V(va,N_SAMPLE);
+  ADE9000_Conv_ADC_I(ia,N_SAMPLE);
 
   printf("VA,IA\r\n");
   for(uint32_t i = 0; i<N_SAMPLE; i++){
-	  printf("%d,%d\r\n",va[i],ia[i]);
+	  printf("%f,%f\r\n",va[i].data_float,ia[i].data_float);
   }
+
 
 
   /* USER CODE END 2 */

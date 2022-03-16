@@ -11,6 +11,8 @@
 int8_t flag_read = 0;
 int32_t n_int = 0;
 
+union DATA va[N_SAMPLE], ia[N_SAMPLE];
+
 void ADE9000_Setup(){
 	uint32_t value_reg_32;
 	uint16_t value_reg_16;
@@ -369,13 +371,11 @@ void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32
 	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 }
 
-void ADE9000_Conv_ADC(int32_t* data, uint32_t n){
-	//printf("conv\r\n");
+void ADE9000_Conv_32_24(int32_t* data, uint32_t n){
 	int32_t app, err = 0;
 	for(uint32_t i=0; i<n; i++){
 		app = *(data + i);
 		if((app & 0x0000000F)!=0) {
-			//printf("Error code\r\n");
 			err +=1;
 		}
 		if ((app &0xF0000000)==0xF0000000){
@@ -384,12 +384,45 @@ void ADE9000_Conv_ADC(int32_t* data, uint32_t n){
 			app = ((app>>4)|0x00000000);
 		}
 		else {
-			//printf("Error code\r\n");
 			err +=1;
 		}
 		*(data+i) = app;
-
 	}
 	printf("errori: %d\r\n",err);
+
+}
+
+void ADE9000_Conv_ADC_I(union DATA *data_i, uint32_t n) {
+	if (ACQUISITION_FREQ == 32000) {
+		for (uint32_t i = 0; i < n; i++) {
+			data_i[i].data_float = ((float) data_i[i].data_int * V_REF / FULL_SCALE_CODE_SINC4) / FDT_I;
+		}
+	} else if (ACQUISITION_FREQ == 8000) {
+		for (uint32_t i = 0; i < n; i++) {
+			data_i[i].data_float = ((float) data_i[i].data_int * V_REF / FULL_SCALE_CODE_LPF) / FDT_I;
+		}
+	}
+
+	for (uint32_t i = 0; i < n; i++) {
+				data_i[i].data_float = (data_i[i].data_float - OFFSET_I)*GAIN_I;
+	}
+
+
+}
+
+void ADE9000_Conv_ADC_V(union DATA *data_v, uint32_t n) {
+	if (ACQUISITION_FREQ == 32000) {
+		for (uint32_t i = 0; i < n; i++) {
+			data_v[i].data_float = ((float) data_v[i].data_int * V_REF / FULL_SCALE_CODE_SINC4) / FDT_V;
+		}
+	} else if (ACQUISITION_FREQ == 8000) {
+		for (uint32_t i = 0; i < n; i++) {
+			data_v[i].data_float = ((float) data_v[i].data_int * V_REF / FULL_SCALE_CODE_LPF) / FDT_V;
+		}
+	}
+
+	for (uint32_t i = 0; i < n; i++) {
+				data_v[i].data_float = (data_v[i].data_float - OFFSET_V)*GAIN_V;
+	}
 
 }
