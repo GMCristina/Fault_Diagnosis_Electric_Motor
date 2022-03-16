@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <ADE9000CalibrationInputs.h>
 #include <ADE9000_Calibration.h>
+#include <Fault_Diagnosis.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -173,9 +174,9 @@ int main(void)
 
 
 
- 		 //ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,ia + index);
+ 		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
  		 //ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
- 		 ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
+ 		 //ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
 
  		  //printf("1 index %d\r\n",index);
  		  index += BURST_READ_N;
@@ -196,9 +197,9 @@ int main(void)
  		  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
 
 
- 		 //ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,ia + index);
+ 		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
  		// ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
- 		ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
+ 		//ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
 
  		 //printf("2 index %d\r\n",index);
  		 index += BURST_READ_N;
@@ -218,15 +219,19 @@ int main(void)
   }
   */
 
-  ADE9000_Conv_ADC_V(va,N_SAMPLE);
+  //ADE9000_Conv_ADC_V(va,N_SAMPLE);
   ADE9000_Conv_ADC_I(ia,N_SAMPLE);
-
+/*
   printf("VA,IA\r\n");
   for(uint32_t i = 0; i<N_SAMPLE; i++){
 	  printf("%f,%f\r\n",va[i].data_float,ia[i].data_float);
   }
 
-
+*/
+  printf("IA\r\n");
+  for(uint32_t i = 0; i<N_SAMPLE; i++){
+	  printf("%f\r\n",ia[i].data_float);
+  }
 
   /* USER CODE END 2 */
 

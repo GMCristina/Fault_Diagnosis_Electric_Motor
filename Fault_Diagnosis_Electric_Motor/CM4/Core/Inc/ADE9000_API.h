@@ -61,7 +61,7 @@
 // 1010(ib), 1011(vb)
 // 1100(ic), 1101(vc)
 // 1110(in), 1111(single add)
-#define BURST_CHAN 0b0001
+#define BURST_CHAN 0b1000
 
 union ADE_DATA_32{
 	uint8_t data_8[4];
@@ -84,7 +84,8 @@ extern SPI_HandleTypeDef hspi1;
 extern int8_t flag_read;
 extern int32_t n_int;
 
-extern union DATA va[N_SAMPLE],ia[N_SAMPLE];
+extern union DATA ia[N_SAMPLE];
+//va[N_SAMPLE],
 
 uint16_t ADE9000_SPI_Read_16(uint16_t Address);
 uint32_t ADE9000_SPI_Read_32(uint16_t Address);
