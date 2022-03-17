@@ -13,7 +13,11 @@ float HiD [DIM_FILTER_WAVELET] = {-0.1601,0.6038,-0.7243,0.1384,0.2423,-0.0322,-
 float Wavelet_dec[N_DEC_WAVELET];
 uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 
-void FD_Wavedec(float* dec, uint16_t* dec_dim, float* y){
+float Ea;
+float Ed [N_LEVEL_WAVELET];
+
+
+void FD_Wavedec_zpd(float* dec, uint16_t* dec_dim, float* y){
 	uint16_t dim_y = N_SAMPLE;
 	uint16_t dim_conv = dim_y + DIM_FILTER_WAVELET - 1;
 	uint16_t dim_coeff = (int)dim_conv/2;
@@ -60,4 +64,45 @@ void FD_Wavedec(float* dec, uint16_t* dec_dim, float* y){
 		dim_coeff = (int)dim_conv/2;
 		}
 	}
+}
+
+void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed){
+	float tot=0;
+	uint16_t index=0;
+	uint16_t dim = 0;
+
+	*Ea =0;
+	for(uint16_t i=0;i<N_LEVEL_WAVELET;i++){
+		Ed[i]=0;
+	}
+
+	for(uint16_t i=0;i<N_LEVEL_WAVELET;i++){
+		dim = dec_dim[i];
+		for(uint16_t j=0;j<dim;j++){
+			Ed[i]=Ed[i]+power(dec[index+j],2);
+		}
+		index = index + dim;
+	}
+
+	dim = dec_dim[N_LEVEL_WAVELET-1];
+	for(uint16_t j=0;j<dim;j++){
+		*Ea=*Ea+power(dec[index+j],2);
+	}
+
+	tot = *Ea;
+	for(uint16_t i=0;i<N_LEVEL_WAVELET;i++){
+		tot = tot + Ed[i];
+	}
+
+	*Ea = 100*(*Ea)/tot;
+	for(uint16_t i=0;i<N_LEVEL_WAVELET;i++){
+		Ed[i] = 100*Ed[i]/tot;
+	}
+}
+
+float power(float a, uint16_t b){
+	if(b == 0)
+		return 1;
+	else
+		return a *= power(a,b-1);
 }

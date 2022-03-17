@@ -22,7 +22,13 @@ extern float HiD [DIM_FILTER_WAVELET];
 extern float Wavelet_dec[N_DEC_WAVELET];
 extern uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 
-void FD_Wavedec(float* dec, uint16_t* dec_dim,float* y);
+extern float Ea;
+extern float Ed [N_LEVEL_WAVELET];
+
+void FD_Wavedec_zpd(float* dec, uint16_t* dec_dim,float* y);
+void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed);
+
+float power(float a, uint16_t b);
 
 
 
