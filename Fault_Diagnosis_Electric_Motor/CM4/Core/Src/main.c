@@ -233,6 +233,13 @@ int main(void)
 	  printf("%f\r\n",ia[i].data_float);
   }
 
+  FD_Wavedec(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
+
+  printf("Dec\r\n");
+  for(uint32_t i = 0; i<N_DEC_WAVELET; i++){
+	  printf("%f\r\n",Wavelet_dec[i]);
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
