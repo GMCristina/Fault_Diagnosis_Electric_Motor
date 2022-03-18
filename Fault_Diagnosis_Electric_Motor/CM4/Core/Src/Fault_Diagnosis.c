@@ -37,8 +37,6 @@ void FD_Wavedec_zpd(float* dec, uint16_t* dec_dim, float* y){
 			for (uint16_t j = 0; j < DIM_FILTER_WAVELET; j++) {
 				if (((i + j) % 2) == 1) { //downsampling (solo pari matlab(da 1)=solo dispari in C (da 0))
 					dec [index_dec+(i + j)/2] = dec[index_dec+(i + j)/2] + y[i] * HiD[j];
-				} else if(((i + j) % 2) == 0){
-					uint16_t temp = i+j;
 				}
 			}
 		}
@@ -48,6 +46,72 @@ void FD_Wavedec_zpd(float* dec, uint16_t* dec_dim, float* y){
 			for (uint16_t j = 0; j < DIM_FILTER_WAVELET; j++) {
 				if (((i + j) % 2) == 1) { //downsampling (solo pari)
 					dec[index_dec + (i + j)/2] = dec[index_dec + (i + j)/2] +y[i] * LoD[j];
+				}
+			}
+		}
+
+		if(!(k==N_LEVEL_WAVELET-1)){
+		dim_y = dim_coeff;
+
+		for(uint16_t i=0; i< dim_y;i++){
+			y[i] = dec[index_dec + i];
+			dec[index_dec+i]=0;
+		}
+
+		dim_conv = dim_y + DIM_FILTER_WAVELET - 1;
+		dim_coeff = (int)dim_conv/2;
+		}
+	}
+}
+
+
+void FD_Wavedec_sym(float* dec, uint16_t* dec_dim, float* y){
+	uint16_t dim_y = N_SAMPLE;
+	uint16_t dim_conv = dim_y + DIM_FILTER_WAVELET - 1;
+	uint16_t dim_coeff = (int)dim_conv/2;
+
+	uint16_t index_border;
+
+	uint16_t index_dec = 0;
+
+	for(int16_t k =0;k<N_DEC_WAVELET;k++){
+		dec[k]=0;
+	}
+
+	for(uint16_t k=0; k<N_LEVEL_WAVELET; k++){
+		//DIM
+		Wavelet_dec_dim[k]=dim_coeff;
+
+		//DETT
+		for (uint16_t i = 0; i < dim_conv; i++) {
+			for (uint16_t j = 0; j < DIM_FILTER_WAVELET; j++) {
+				if ((i % 2) == 1) { //downsampling (solo pari matlab(da 1)=solo dispari in C (da 0))
+					if((i-j)<0){ //gestire primi elementi
+						index_border = -(i-j)-1;
+						dec[index_dec+i/2] = dec[index_dec+i/2] + y[index_border] * HiD[j];
+					} else if((i-j)>=dim_y){ //gestire ultimi elementi
+						index_border = (dim_y-1)-((i-j)-dim_y);
+						dec[index_dec+i/2] = dec[index_dec+i/2] + y[index_border] * HiD[j];
+					} else {
+						dec [index_dec+i/2] = dec[index_dec+i/2] + y[i-j] * HiD[j];
+					}
+				}
+			}
+		}
+		//APPR
+		index_dec = index_dec + dim_coeff;
+		for (uint16_t i = 0; i < dim_conv; i++) {
+			for (uint16_t j = 0; j < DIM_FILTER_WAVELET; j++) {
+				if ((i % 2) == 1) { //downsampling (solo pari matlab(da 1)=solo dispari in C (da 0))
+					if((i-j)<0){ //gestire primi elementi
+						index_border = -(i-j)-1;
+						dec[index_dec+i/2] = dec[index_dec+i/2] + y[index_border] * LoD[j];
+					} else if((i-j)>=dim_y){ //gestire ultimi elementi
+						index_border = (dim_y-1)-((i-j)-dim_y);
+						dec[index_dec+i/2] = dec[index_dec+i/2] + y[index_border] * LoD[j];
+					} else {
+						dec [index_dec+i/2] = dec[index_dec+i/2] + y[i-j] * LoD[j];
+					}
 				}
 			}
 		}

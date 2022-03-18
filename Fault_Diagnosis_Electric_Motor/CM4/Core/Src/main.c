@@ -230,10 +230,11 @@ int main(void)
 */
   printf("IA\r\n");
   for(uint32_t i = 0; i<N_SAMPLE; i++){
-	  printf("%f\r\n",ia[i].data_float);
+	 printf("%f\r\n",ia[i].data_float);
   }
 
-  FD_Wavedec_zpd(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
+  //FD_Wavedec_zpd(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
+  FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
 
   printf("Dec\r\n");
   for(uint32_t i = 0; i<N_DEC_WAVELET; i++){

@@ -26,6 +26,7 @@ extern float Ea;
 extern float Ed [N_LEVEL_WAVELET];
 
 void FD_Wavedec_zpd(float* dec, uint16_t* dec_dim,float* y);
+void FD_Wavedec_sym(float* dec, uint16_t* dec_dim,float* y);
 void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed);
 
 float power(float a, uint16_t b);
