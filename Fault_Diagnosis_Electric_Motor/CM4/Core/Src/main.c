@@ -143,6 +143,12 @@ int main(void)
   ADE9000_Power();
 
 //  test_read_write_reg();
+
+
+
+  FD_Hilbert(y_1);
+
+
   setvbuf( stdin, NULL, _IONBF, 0 );
 
   ADE9000_Setup();

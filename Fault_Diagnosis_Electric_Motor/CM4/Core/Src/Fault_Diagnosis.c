@@ -6,12 +6,17 @@
  */
 
 #include<Fault_Diagnosis.h>
+#include<math.h>
 //Filter for wavelet db5
 float LoD [DIM_FILTER_WAVELET] = {0.0033,-0.0126,-0.0062,0.0776,-0.0322,-0.2423,0.1384,0.7243,0.6038,0.1601};
 float HiD [DIM_FILTER_WAVELET] = {-0.1601,0.6038,-0.7243,0.1384,0.2423,-0.0322,-0.0776,-0.0062,0.0126,0.0033};
 
 float Wavelet_dec[N_DEC_WAVELET];
 uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
+
+float FFT_r[N_SAMPLE];
+float FFT_i[N_SAMPLE];
+float y_1[N_SAMPLE] = {0.957506835434298,0.964888535199277,0.157613081677548,0.970592781760616,0.957166948242946,0.485375648722841,0.800280468888800,0.141886338627215,0.421761282626275,0.915735525189067,0.792207329559554,0.959492426392903,0.655740699156587,0.0357116785741896,0.849129305868777,0.933993247757551};
 
 float Ea;
 float Ed [N_LEVEL_WAVELET];
@@ -143,14 +148,14 @@ void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed){
 	for(uint16_t i=0;i<N_LEVEL_WAVELET;i++){
 		dim = dec_dim[i];
 		for(uint16_t j=0;j<dim;j++){
-			Ed[i]=Ed[i]+power(dec[index+j],2);
+			Ed[i]=Ed[i]+pow(dec[index+j],2);
 		}
 		index = index + dim;
 	}
 
 	dim = dec_dim[N_LEVEL_WAVELET-1];
 	for(uint16_t j=0;j<dim;j++){
-		*Ea=*Ea+power(dec[index+j],2);
+		*Ea=*Ea+pow(dec[index+j],2);
 	}
 
 	tot = *Ea;
@@ -164,9 +169,37 @@ void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed){
 	}
 }
 
-float power(float a, uint16_t b){
-	if(b == 0)
-		return 1;
-	else
-		return a *= power(a,b-1);
+
+
+void FD_Hilbert(float* y){
+
+	//FFT
+	for(uint32_t n=0;n<N_SAMPLE;n++){
+		for(uint32_t h=0;h<N_SAMPLE;h++){
+			float arg = 2*M_PI*n*h/N_SAMPLE;
+		       FFT_r[n] += y[h]*cos(arg);
+		       FFT_i[n] += -y[h]*sin(arg);
+		}
+	}
+	//DELETE NEGATIVE
+	for(uint32_t n=0;n<N_SAMPLE;n++){
+		if(n>N_SAMPLE/2){
+			FFT_r[n] = 0;
+			FFT_i[n] = 0;
+		} else if (n>0 && n<N_SAMPLE/2){
+			FFT_r[n] = 2*FFT_r[n];
+			FFT_i[n] = 2*FFT_i[n];
+		}
+	}
+	//IFFT and envelope
+	for(uint32_t n=0;n<N_SAMPLE;n++){
+		float app_i = 0;
+			for(uint32_t h=0;h<N_SAMPLE;h++){
+			      app_i=app_i+ FFT_r[h]*sin(2*M_PI*n*h/N_SAMPLE) + FFT_i[h]*cos(2*M_PI*n*h/N_SAMPLE);
+			}
+			app_i=app_i/N_SAMPLE;
+			y[n] = sqrt(pow(app_i,2)+pow(y[n],2));
+	}
+
+
 }
