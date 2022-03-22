@@ -19,8 +19,8 @@ float HiD [DIM_FILTER_WAVELET] = {-0.1601,0.6038,-0.7243,0.1384,0.2423,-0.0322,-
 float Wavelet_dec[N_DEC_WAVELET];
 uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 
-float FFT_r[N_SAMPLE/2 +1];
-float FFT_i[N_SAMPLE/2 +1];
+//float FFT_r[N_SAMPLE/2 +1];
+//float FFT_i[N_SAMPLE/2 +1];
 //float y_1[N_SAMPLE] = {0.957506835434298,0.964888535199277,0.157613081677548,0.970592781760616,0.957166948242946,0.485375648722841,0.800280468888800,0.141886338627215,0.421761282626275,0.915735525189067,0.792207329559554,0.959492426392903,0.655740699156587,0.0357116785741896,0.849129305868777,0.933993247757551};
 
 
@@ -178,6 +178,11 @@ void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed){
 
 
 void FD_Hilbert(float* y){
+
+	float* FFT_r = &Wavelet_dec[0];
+	float* FFT_i = &Wavelet_dec[N_SAMPLE/2+1];
+
+
 	float arg, sine, cosine, fat1, fat2;
 
 	fat1 = 2*PI/N_SAMPLE;
@@ -188,15 +193,15 @@ void FD_Hilbert(float* y){
 			arg = fat2*h;
 			cosine = arm_cos_f32(arg);
 			sine = arm_sin_f32(arg);
-		       FFT_r[n] += y[h]*cosine;//cos(arg);
-		       FFT_i[n] += -y[h]*sine;//sin(arg);
+		       *(FFT_r + n) += y[h]*cosine;//cos(arg);
+		       *(FFT_i + n) += -y[h]*sine;//sin(arg);
 		}
 	}
 	//DELETE NEGATIVE
 	for(uint32_t n=0;n<=N_SAMPLE/2;n++){
 		if (n>0 && n<N_SAMPLE/2){
-			FFT_r[n] = 2*FFT_r[n];
-			FFT_i[n] = 2*FFT_i[n];
+			*(FFT_r + n) = 2*(*(FFT_r + n));
+			*(FFT_i + n) = 2*(*(FFT_i + n));
 		}
 	}
 	//IFFT and envelope
@@ -207,7 +212,7 @@ void FD_Hilbert(float* y){
 				arg = fat2*h;
 				sine = arm_sin_f32(arg);
 				cosine = arm_cos_f32(arg);
-			      app_i += FFT_r[h]*sine + FFT_i[h]*cosine;
+			      app_i += (*(FFT_r + h))*sine + (*(FFT_i + h))*cosine;
 			}
 			app_i=app_i/N_SAMPLE;
 			y[n] = sqrt(app_i*app_i + y[n]*y[n]);

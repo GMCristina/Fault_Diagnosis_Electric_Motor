@@ -24,8 +24,8 @@ extern float HiD [DIM_FILTER_WAVELET];
 extern float Wavelet_dec[N_DEC_WAVELET];
 extern uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 
-extern float FFT_r[N_SAMPLE/2 +1];
-extern float FFT_i[N_SAMPLE/2 +1];
+//extern float FFT_r[N_SAMPLE/2 +1];
+//extern float FFT_i[N_SAMPLE/2 +1];
 //extern float y_1[N_SAMPLE];
 
 extern float Ea;
