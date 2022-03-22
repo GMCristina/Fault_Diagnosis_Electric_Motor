@@ -5,8 +5,13 @@
  *      Author: M.Cristina Giannini
  */
 
+
 #include<Fault_Diagnosis.h>
 #include<math.h>
+
+#define ARM_MATH_CM4
+#include <arm_math.h>
+
 //Filter for wavelet db5
 float LoD [DIM_FILTER_WAVELET] = {0.0033,-0.0126,-0.0062,0.0776,-0.0322,-0.2423,0.1384,0.7243,0.6038,0.1601};
 float HiD [DIM_FILTER_WAVELET] = {-0.1601,0.6038,-0.7243,0.1384,0.2423,-0.0322,-0.0776,-0.0062,0.0126,0.0033};
@@ -17,6 +22,7 @@ uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 float FFT_r[N_SAMPLE];
 float FFT_i[N_SAMPLE];
 float y_1[N_SAMPLE] = {0.957506835434298,0.964888535199277,0.157613081677548,0.970592781760616,0.957166948242946,0.485375648722841,0.800280468888800,0.141886338627215,0.421761282626275,0.915735525189067,0.792207329559554,0.959492426392903,0.655740699156587,0.0357116785741896,0.849129305868777,0.933993247757551};
+
 
 float Ea;
 float Ed [N_LEVEL_WAVELET];
@@ -172,33 +178,39 @@ void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed){
 
 
 void FD_Hilbert(float* y){
+	float arg, sine, cosine, fat1, fat2;
 
+	fat1 = 2*PI/N_SAMPLE;
 	//FFT
-	for(uint32_t n=0;n<N_SAMPLE;n++){
+	for(uint32_t n=0;n<=N_SAMPLE/2;n++){
+		fat2 = fat1*n;
 		for(uint32_t h=0;h<N_SAMPLE;h++){
-			float arg = 2*M_PI*n*h/N_SAMPLE;
-		       FFT_r[n] += y[h]*cos(arg);
-		       FFT_i[n] += -y[h]*sin(arg);
+			arg = fat2*h;
+			cosine = arm_cos_f32(arg);
+			sine = arm_sin_f32(arg);
+		       FFT_r[n] += y[h]*cosine;//cos(arg);
+		       FFT_i[n] += -y[h]*sine;//sin(arg);
 		}
 	}
 	//DELETE NEGATIVE
-	for(uint32_t n=0;n<N_SAMPLE;n++){
-		if(n>N_SAMPLE/2){
-			FFT_r[n] = 0;
-			FFT_i[n] = 0;
-		} else if (n>0 && n<N_SAMPLE/2){
+	for(uint32_t n=0;n<=N_SAMPLE/2;n++){
+		if (n>0 && n<N_SAMPLE/2){
 			FFT_r[n] = 2*FFT_r[n];
 			FFT_i[n] = 2*FFT_i[n];
 		}
 	}
 	//IFFT and envelope
 	for(uint32_t n=0;n<N_SAMPLE;n++){
+		fat2 = fat1*n;
 		float app_i = 0;
 			for(uint32_t h=0;h<N_SAMPLE;h++){
-			      app_i=app_i+ FFT_r[h]*sin(2*M_PI*n*h/N_SAMPLE) + FFT_i[h]*cos(2*M_PI*n*h/N_SAMPLE);
+				arg = fat2*h;
+				sine = arm_sin_f32(arg);
+				cosine = arm_cos_f32(arg);
+			      app_i += FFT_r[h]*sine + FFT_i[h]*cosine;
 			}
 			app_i=app_i/N_SAMPLE;
-			y[n] = sqrt(pow(app_i,2)+pow(y[n],2));
+			y[n] = sqrt(app_i*app_i + y[n]*y[n]);
 	}
 
 

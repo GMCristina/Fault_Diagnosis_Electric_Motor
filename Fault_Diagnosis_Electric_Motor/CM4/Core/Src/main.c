@@ -27,6 +27,10 @@
 #include <ADE9000CalibrationInputs.h>
 #include <ADE9000_Calibration.h>
 #include <Fault_Diagnosis.h>
+#define ARM_MATH_CM4
+#include <arm_math.h>
+#include <arm_const_structs.h>
+#include<arm_common_tables.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -144,9 +148,21 @@ int main(void)
 
 //  test_read_write_reg();
 
+/*
+  float yf[2*N_SAMPLE];
+  for(uint32_t i=0; i<2*N_SAMPLE; i++){
+ 	  yf[i]=i;
+ 	  i++;
+ 	  yf[i]=0;
+   }
 
+  arm_cfft_f32(&arm_cfft_sR_f32_len32, yf, 0, 1);
+*/
+  //arm_rfft_fast_instance_f32 S;
+  //arm_rfft_fast_init_f32(&S,N_SAMPLE);
+  //arm_rfft_fast_f32(&S, y_1,yf,0);
 
-  FD_Hilbert(y_1);
+//  FD_Hilbert(y_1);
 
 
   setvbuf( stdin, NULL, _IONBF, 0 );
@@ -238,6 +254,8 @@ int main(void)
   for(uint32_t i = 0; i<N_SAMPLE; i++){
 	 printf("%f\r\n",ia[i].data_float);
   }
+
+  FD_Hilbert(&ia[0].data_float);
 
   //FD_Wavedec_zpd(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
