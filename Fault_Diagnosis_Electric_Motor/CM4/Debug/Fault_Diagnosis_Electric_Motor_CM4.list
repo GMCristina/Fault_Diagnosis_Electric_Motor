@@ -17,31 +17,31 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   6 .data         00000238  10000000  0810d990  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .bss          0002039c  10000238  0810dbc8  00020238  2**2
+  7 .bss          000183a4  10000238  0810dbc8  00020238  2**2
                   ALLOC
-  8 ._user_heap_stack 00000604  100205d4  0810dbc8  000205d4  2**0
+  8 ._user_heap_stack 00000604  100185dc  0810dbc8  000285dc  2**0
                   ALLOC
   9 .ARM.attributes 00000030  00000000  00000000  00020238  2**0
                   CONTENTS, READONLY
- 10 .debug_info   00022823  00000000  00000000  00020268  2**0
+ 10 .debug_info   000227fc  00000000  00000000  00020268  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 00003781  00000000  00000000  00042a8b  2**0
+ 11 .debug_abbrev 0000377f  00000000  00000000  00042a64  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 12 .debug_aranges 00000eb8  00000000  00000000  00046210  2**3
+ 12 .debug_aranges 00000eb8  00000000  00000000  000461e8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_ranges 00000d88  00000000  00000000  000470c8  2**3
+ 13 .debug_ranges 00000d88  00000000  00000000  000470a0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  0003c5e7  00000000  00000000  00047e50  2**0
+ 14 .debug_macro  0003c5e7  00000000  00000000  00047e28  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   00014235  00000000  00000000  00084437  2**0
+ 15 .debug_line   00014235  00000000  00000000  0008440f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    001873cd  00000000  00000000  0009866c  2**0
+ 16 .debug_str    001873cd  00000000  00000000  00098644  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      000000c3  00000000  00000000  0021fa39  2**0
+ 17 .comment      000000c3  00000000  00000000  0021fa11  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  00005384  00000000  00000000  0021fafc  2**2
+ 18 .debug_frame  00005384  00000000  00000000  0021fad4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_loc    0000016e  00000000  00000000  00224e80  2**0
+ 19 .debug_loc    0000016e  00000000  00000000  00224e58  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1620,7 +1620,7 @@ uint16_t ADE9000_SPI_Read_16(uint16_t Address){
  81012a0:	46bd      	mov	sp, r7
  81012a2:	bd80      	pop	{r7, pc}
  81012a4:	58021800 	.word	0x58021800
- 81012a8:	1002047c 	.word	0x1002047c
+ 81012a8:	10018484 	.word	0x10018484
 
 081012ac <ADE9000_SPI_Read_32>:
 
@@ -1695,7 +1695,7 @@ uint32_t ADE9000_SPI_Read_32(uint16_t Address){
  8101318:	46bd      	mov	sp, r7
  810131a:	bd80      	pop	{r7, pc}
  810131c:	58021800 	.word	0x58021800
- 8101320:	1002047c 	.word	0x1002047c
+ 8101320:	10018484 	.word	0x10018484
 
 08101324 <ADE9000_SPI_Write_16>:
 
@@ -1762,7 +1762,7 @@ void ADE9000_SPI_Write_16(uint16_t Address, uint16_t Data){
  8101380:	46bd      	mov	sp, r7
  8101382:	bd80      	pop	{r7, pc}
  8101384:	58021800 	.word	0x58021800
- 8101388:	1002047c 	.word	0x1002047c
+ 8101388:	10018484 	.word	0x10018484
 
 0810138c <ADE9000_SPI_Write_32>:
 
@@ -1836,7 +1836,7 @@ void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data){
  81013f8:	46bd      	mov	sp, r7
  81013fa:	bd80      	pop	{r7, pc}
  81013fc:	58021800 	.word	0x58021800
- 8101400:	1002047c 	.word	0x1002047c
+ 8101400:	10018484 	.word	0x10018484
 
 08101404 <Start_Waveform_Buffer>:
 
@@ -1991,7 +1991,7 @@ void ADE9000_SPI_Burst_Read_one_ch(uint16_t Address, uint16_t n, int32_t* data){
  81014f4:	bd80      	pop	{r7, pc}
  81014f6:	bf00      	nop
  81014f8:	58021800 	.word	0x58021800
- 81014fc:	1002047c 	.word	0x1002047c
+ 81014fc:	10018484 	.word	0x10018484
 
 08101500 <ADE9000_Conv_ADC_I>:
 	}
@@ -2968,7 +2968,7 @@ void FD_Hilbert(float* y){
 		float app_i = 0;
  8101c66:	f04f 0300 	mov.w	r3, #0
  8101c6a:	627b      	str	r3, [r7, #36]	; 0x24
-			for(uint32_t h=0;h<N_SAMPLE;h++){
+			for(uint32_t h=0;h<=N_SAMPLE/2;h++){
  8101c6c:	2300      	movs	r3, #0
  8101c6e:	623b      	str	r3, [r7, #32]
  8101c70:	e035      	b.n	8101cde <FD_Hilbert+0x1ca>
@@ -3006,13 +3006,13 @@ void FD_Hilbert(float* y){
  8101ccc:	ed97 7a09 	vldr	s14, [r7, #36]	; 0x24
  8101cd0:	ee77 7a27 	vadd.f32	s15, s14, s15
  8101cd4:	edc7 7a09 	vstr	s15, [r7, #36]	; 0x24
-			for(uint32_t h=0;h<N_SAMPLE;h++){
+			for(uint32_t h=0;h<=N_SAMPLE/2;h++){
  8101cd8:	6a3b      	ldr	r3, [r7, #32]
  8101cda:	3301      	adds	r3, #1
  8101cdc:	623b      	str	r3, [r7, #32]
  8101cde:	6a3b      	ldr	r3, [r7, #32]
- 8101ce0:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
- 8101ce4:	d3c5      	bcc.n	8101c72 <FD_Hilbert+0x15e>
+ 8101ce0:	f5b3 5f80 	cmp.w	r3, #4096	; 0x1000
+ 8101ce4:	d9c5      	bls.n	8101c72 <FD_Hilbert+0x15e>
 			}
 			app_i=app_i/N_SAMPLE;
  8101ce6:	ed97 7a09 	vldr	s14, [r7, #36]	; 0x24
@@ -3066,7 +3066,7 @@ void FD_Hilbert(float* y){
  8101d5e:	bd90      	pop	{r4, r7, pc}
  8101d60:	3a490fdb 	.word	0x3a490fdb
  8101d64:	100082a4 	.word	0x100082a4
- 8101d68:	100102a8 	.word	0x100102a8
+ 8101d68:	1000c2ac 	.word	0x1000c2ac
  8101d6c:	46000000 	.word	0x46000000
 
 08101d70 <main>:
@@ -3438,10 +3438,10 @@ int main(void)
  8101fbc:	0810cc38 	.word	0x0810cc38
  8101fc0:	0810cc3c 	.word	0x0810cc3c
  8101fc4:	10008290 	.word	0x10008290
- 8101fc8:	100182a8 	.word	0x100182a8
+ 8101fc8:	100102b0 	.word	0x100102b0
  8101fcc:	0810cc44 	.word	0x0810cc44
  8101fd0:	10008268 	.word	0x10008268
- 8101fd4:	100102a4 	.word	0x100102a4
+ 8101fd4:	1000c2a8 	.word	0x1000c2a8
 
 08101fd8 <MX_SPI1_Init>:
   * @brief SPI1 Initialization Function
@@ -3563,7 +3563,7 @@ static void MX_SPI1_Init(void)
  8102076:	bf00      	nop
  8102078:	bd80      	pop	{r7, pc}
  810207a:	bf00      	nop
- 810207c:	1002047c 	.word	0x1002047c
+ 810207c:	10018484 	.word	0x10018484
  8102080:	40013000 	.word	0x40013000
 
 08102084 <MX_USART3_UART_Init>:
@@ -3673,7 +3673,7 @@ static void MX_USART3_UART_Init(void)
 }
  8102110:	bf00      	nop
  8102112:	bd80      	pop	{r7, pc}
- 8102114:	100203ec 	.word	0x100203ec
+ 8102114:	100183f4 	.word	0x100183f4
  8102118:	40004800 	.word	0x40004800
 
 0810211c <MX_GPIO_Init>:
@@ -3876,7 +3876,7 @@ int __io_putchar(int ch) {
  8102292:	3708      	adds	r7, #8
  8102294:	46bd      	mov	sp, r7
  8102296:	bd80      	pop	{r7, pc}
- 8102298:	100203ec 	.word	0x100203ec
+ 8102298:	100183f4 	.word	0x100183f4
 
 0810229c <__io_getchar>:
 
@@ -3915,7 +3915,7 @@ int __io_getchar(void)
  81022ca:	3708      	adds	r7, #8
  81022cc:	46bd      	mov	sp, r7
  81022ce:	bd80      	pop	{r7, pc}
- 81022d0:	100203ec 	.word	0x100203ec
+ 81022d0:	100183f4 	.word	0x100183f4
 
 081022d4 <HAL_GPIO_EXTI_Callback>:
 
@@ -4760,7 +4760,7 @@ void *_sbrk(ptrdiff_t incr)
  81026f4:	10048000 	.word	0x10048000
  81026f8:	00000400 	.word	0x00000400
  81026fc:	1000025c 	.word	0x1000025c
- 8102700:	100205d8 	.word	0x100205d8
+ 8102700:	100185e0 	.word	0x100185e0
 
 08102704 <Reset_Handler>:
     .section  .text.Reset_Handler
@@ -4851,7 +4851,7 @@ LoopFillZerobss:
   ldr r2, =_sbss
  810274c:	10000238 	.word	0x10000238
   ldr r4, =_ebss
- 8102750:	100205d4 	.word	0x100205d4
+ 8102750:	100185dc 	.word	0x100185dc
 
 08102754 <ADC3_IRQHandler>:
  * @retval None
@@ -5088,7 +5088,7 @@ __weak void HAL_IncTick(void)
  810289c:	4770      	bx	lr
  810289e:	bf00      	nop
  81028a0:	1000005c 	.word	0x1000005c
- 81028a4:	100205c0 	.word	0x100205c0
+ 81028a4:	100185c8 	.word	0x100185c8
 
 081028a8 <HAL_GetTick>:
   * @note This function is declared as __weak to be overwritten in case of other
@@ -5108,7 +5108,7 @@ __weak uint32_t HAL_GetTick(void)
  81028b4:	f85d 7b04 	ldr.w	r7, [sp], #4
  81028b8:	4770      	bx	lr
  81028ba:	bf00      	nop
- 81028bc:	100205c0 	.word	0x100205c0
+ 81028bc:	100185c8 	.word	0x100185c8
 
 081028c0 <HAL_Delay>:
   *       implementations in user file.
@@ -16576,25 +16576,25 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  81072e8:	4801      	ldr	r0, [pc, #4]	; (81072f0 <__sfp_lock_acquire+0x8>)
  81072ea:	f000 b8d8 	b.w	810749e <__retarget_lock_acquire_recursive>
  81072ee:	bf00      	nop
- 81072f0:	100205cc 	.word	0x100205cc
+ 81072f0:	100185d4 	.word	0x100185d4
 
 081072f4 <__sfp_lock_release>:
  81072f4:	4801      	ldr	r0, [pc, #4]	; (81072fc <__sfp_lock_release+0x8>)
  81072f6:	f000 b8d3 	b.w	81074a0 <__retarget_lock_release_recursive>
  81072fa:	bf00      	nop
- 81072fc:	100205cc 	.word	0x100205cc
+ 81072fc:	100185d4 	.word	0x100185d4
 
 08107300 <__sinit_lock_acquire>:
  8107300:	4801      	ldr	r0, [pc, #4]	; (8107308 <__sinit_lock_acquire+0x8>)
  8107302:	f000 b8cc 	b.w	810749e <__retarget_lock_acquire_recursive>
  8107306:	bf00      	nop
- 8107308:	100205c7 	.word	0x100205c7
+ 8107308:	100185cf 	.word	0x100185cf
 
 0810730c <__sinit_lock_release>:
  810730c:	4801      	ldr	r0, [pc, #4]	; (8107314 <__sinit_lock_release+0x8>)
  810730e:	f000 b8c7 	b.w	81074a0 <__retarget_lock_release_recursive>
  8107312:	bf00      	nop
- 8107314:	100205c7 	.word	0x100205c7
+ 8107314:	100185cf 	.word	0x100185cf
 
 08107318 <__sinit>:
  8107318:	b510      	push	{r4, lr}
@@ -18395,7 +18395,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  810842e:	b103      	cbz	r3, 8108432 <_sbrk_r+0x1a>
  8108430:	6023      	str	r3, [r4, #0]
  8108432:	bd38      	pop	{r3, r4, r5, pc}
- 8108434:	100205d0 	.word	0x100205d0
+ 8108434:	100185d8 	.word	0x100185d8
 
 08108438 <setvbuf>:
  8108438:	e92d 43f7 	stmdb	sp!, {r0, r1, r2, r4, r5, r6, r7, r8, r9, lr}
@@ -20060,7 +20060,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  81094ba:	b103      	cbz	r3, 81094be <_write_r+0x1e>
  81094bc:	6023      	str	r3, [r4, #0]
  81094be:	bd38      	pop	{r3, r4, r5, pc}
- 81094c0:	100205d0 	.word	0x100205d0
+ 81094c0:	100185d8 	.word	0x100185d8
 
 081094c4 <__swsetup_r>:
  81094c4:	4b32      	ldr	r3, [pc, #200]	; (8109590 <__swsetup_r+0xcc>)
@@ -20170,7 +20170,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  81095b6:	b103      	cbz	r3, 81095ba <_close_r+0x1a>
  81095b8:	6023      	str	r3, [r4, #0]
  81095ba:	bd38      	pop	{r3, r4, r5, pc}
- 81095bc:	100205d0 	.word	0x100205d0
+ 81095bc:	100185d8 	.word	0x100185d8
 
 081095c0 <quorem>:
  81095c0:	e92d 4ff7 	stmdb	sp!, {r0, r1, r2, r4, r5, r6, r7, r8, r9, sl, fp, lr}
@@ -22183,7 +22183,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  810a9b2:	b103      	cbz	r3, 810a9b6 <_lseek_r+0x1e>
  810a9b4:	6023      	str	r3, [r4, #0]
  810a9b6:	bd38      	pop	{r3, r4, r5, pc}
- 810a9b8:	100205d0 	.word	0x100205d0
+ 810a9b8:	100185d8 	.word	0x100185d8
 
 0810a9bc <__swhatbuf_r>:
  810a9bc:	b570      	push	{r4, r5, r6, lr}
@@ -22316,13 +22316,13 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  810aad4:	4801      	ldr	r0, [pc, #4]	; (810aadc <__malloc_lock+0x8>)
  810aad6:	f7fc bce2 	b.w	810749e <__retarget_lock_acquire_recursive>
  810aada:	bf00      	nop
- 810aadc:	100205c8 	.word	0x100205c8
+ 810aadc:	100185d0 	.word	0x100185d0
 
 0810aae0 <__malloc_unlock>:
  810aae0:	4801      	ldr	r0, [pc, #4]	; (810aae8 <__malloc_unlock+0x8>)
  810aae2:	f7fc bcdd 	b.w	81074a0 <__retarget_lock_release_recursive>
  810aae6:	bf00      	nop
- 810aae8:	100205c8 	.word	0x100205c8
+ 810aae8:	100185d0 	.word	0x100185d0
 
 0810aaec <_Balloc>:
  810aaec:	b570      	push	{r4, r5, r6, lr}
@@ -23875,7 +23875,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  810ba06:	b103      	cbz	r3, 810ba0a <_read_r+0x1e>
  810ba08:	6023      	str	r3, [r4, #0]
  810ba0a:	bd38      	pop	{r3, r4, r5, pc}
- 810ba0c:	100205d0 	.word	0x100205d0
+ 810ba0c:	100185d8 	.word	0x100185d8
 
 0810ba10 <nan>:
  810ba10:	ed9f 0b01 	vldr	d0, [pc, #4]	; 810ba18 <nan+0x8>
@@ -23974,7 +23974,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  810bada:	6023      	str	r3, [r4, #0]
  810badc:	bd38      	pop	{r3, r4, r5, pc}
  810bade:	bf00      	nop
- 810bae0:	100205d0 	.word	0x100205d0
+ 810bae0:	100185d8 	.word	0x100185d8
 
 0810bae4 <_isatty_r>:
  810bae4:	b538      	push	{r3, r4, r5, lr}
@@ -23990,7 +23990,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  810bafa:	b103      	cbz	r3, 810bafe <_isatty_r+0x1a>
  810bafc:	6023      	str	r3, [r4, #0]
  810bafe:	bd38      	pop	{r3, r4, r5, pc}
- 810bb00:	100205d0 	.word	0x100205d0
+ 810bb00:	100185d8 	.word	0x100185d8
 
 0810bb04 <memmove>:
  810bb04:	4288      	cmp	r0, r1
@@ -24125,7 +24125,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  810bc1e:	6023      	str	r3, [r4, #0]
  810bc20:	bd38      	pop	{r3, r4, r5, pc}
  810bc22:	bf00      	nop
- 810bc24:	100205d0 	.word	0x100205d0
+ 810bc24:	100185d8 	.word	0x100185d8
 
 0810bc28 <_getpid_r>:
  810bc28:	f7f6 bca6 	b.w	8102578 <_getpid>
