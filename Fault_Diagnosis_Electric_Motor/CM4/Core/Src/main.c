@@ -147,7 +147,6 @@ int main(void)
 
   ADE9000_Power();
 
-//  test_read_write_reg();
 
 /*
   float yf[2*N_SAMPLE];
@@ -163,17 +162,11 @@ int main(void)
   //arm_rfft_fast_init_f32(&S,N_SAMPLE);
   //arm_rfft_fast_f32(&S, y_1,yf,0);
 
-//  FD_Hilbert(y_1);
-
 
   setvbuf( stdin, NULL, _IONBF, 0 );
 
   ADE9000_Setup();
 
-  printf("%d,%d,%d\r\n",N_BUFFER, N_SAMPLE,BURST_READ_N);
-
-  printf("fdti: %f\t fdtv: %f \r\n",CURRENT_TRANSFER_FUNCTION,VOLTAGE_TRANSFER_FUNCTION);
-  //ADE9000_Calibration();
 
   uint16_t index = 0;
   uint32_t start;
@@ -184,9 +177,7 @@ int main(void)
 
   while(index < N_SAMPLE){
  		  while(flag_read == 0){}
- 		 //uint32_t tickstart = HAL_GetTick();
 
-		  //printf("nint: %d\t", n_int);
  		  flag_read = 0;
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
 
@@ -198,20 +189,12 @@ int main(void)
 
 
  		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
- 		 //ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
- 		 //ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
 
- 		  //printf("1 index %d\r\n",index);
  		  index += BURST_READ_N;
- 		/*
- 		 uint32_t tickend = HAL_GetTick();
- 		 uint32_t ntick = tickend-tickstart;
- 		 printf("TIME: %d MS\r\n",ntick);
- 		*/
+
  		  while(flag_read == 0){}
 
-  		 //tickstart = HAL_GetTick();
- 		  //printf("nint: %d\t", n_int);
+
  		  flag_read = 0;
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
  		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
@@ -221,36 +204,16 @@ int main(void)
 
 
  		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
- 		// ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,ia + index,va +index);
- 		//ADE9000_SPI_Burst_Read_two_ch(start, BURST_READ_N,&ia[index].data_int,&va[index].data_int);
 
- 		 //printf("2 index %d\r\n",index);
  		 index += BURST_READ_N;
-/*
-   		tickend = HAL_GetTick();
-   		 ntick = tickend-tickstart;
-   		 printf("TIME: %d MS\r\n",ntick);
-*/
+
 
  }
   Stop_Waveform_Buffer();
 
-  /*
-  printf("VA,IA\r\n");
-  for(uint32_t i = 0; i<N_SAMPLE; i++){
-	  printf("%d,%d\r\n",va[i].data_int,ia[i].data_int);
-  }
-  */
 
-  //ADE9000_Conv_ADC_V(va,N_SAMPLE);
   ADE9000_Conv_ADC_I(ia,N_SAMPLE);
-/*
-  printf("VA,IA\r\n");
-  for(uint32_t i = 0; i<N_SAMPLE; i++){
-	  printf("%f,%f\r\n",va[i].data_float,ia[i].data_float);
-  }
 
-*/
   printf("IA\r\n");
   for(uint32_t i = 0; i<N_SAMPLE; i++){
 	 printf("%f\r\n",ia[i].data_float);
