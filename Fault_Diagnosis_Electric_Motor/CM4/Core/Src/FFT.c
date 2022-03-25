@@ -6,8 +6,8 @@
  */
 #include<FFT.h>
 
-float complex vec[N_SAMPLE];
-float complex app[N_SAMPLE];
+//float complex vec[N_SAMPLE];
+//float complex app[N_SAMPLE];
 
 
 int log2_c(int N)
@@ -33,26 +33,31 @@ int reverse(int N, int n)
 
 void order(float complex* f1, int N)
 {
+  float complex *app = (float complex*)malloc(N_SAMPLE * sizeof(float complex));
+
   for(int i = 0; i < N; i++)
     app[i] = f1[reverse(N, i)];
   for(int j = 0; j < N; j++)
     f1[j] = app[j];
+  free(app);
+  app=NULL;
 }
 
 void FFT(float complex* f, int N){
 	order(f, N);
 	uint32_t step = log2_c(N);
 
-	      app[0] = 1;
+	float complex *W = (float complex*)malloc(N_SAMPLE/2 * sizeof(float complex));
+	      W[0] = 1;
 	      for(int i = 1; i < N / 2; i++)
-	        app[i] = cos(-2*M_PI*i/N)+I*sin(-2*M_PI*i/N);
+	        W[i] = cos(-2*M_PI*i/N)+I*sin(-2*M_PI*i/N);
 	      int n = 1;
 	      int a = N / 2;
 	      for(int j = 0; j < step; j++) {
 	        for(int i = 0; i < N; i++) {
 	          if(!(i & n)) {
 	              float complex temp = f[i];
-	            float complex Temp = app[(i * a) % (n * a)] * f[i + n];
+	            float complex Temp = W[(i * a) % (n * a)] * f[i + n];
 	            f[i] = temp + Temp;
 	            f[i + n] = temp - Temp;
 

@@ -14,7 +14,9 @@
 #include<Fault_Diagnosis.h>
 #include<ADE9000_API.h>
 
-extern float complex vec[N_SAMPLE];
+#include <stdlib.h>
+
+//extern float complex vec[N_SAMPLE]; //float complex (8byte=4*2)
 
 int log2_c(int N);
 int reverse(int N, int n);

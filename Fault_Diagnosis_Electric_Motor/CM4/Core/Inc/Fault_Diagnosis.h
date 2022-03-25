@@ -8,6 +8,8 @@
 #ifndef INC_FAULT_DIAGNOSIS_H_
 #define INC_FAULT_DIAGNOSIS_H_
 
+#include <stdlib.h>
+
 #include<ADE9000_API.h>
 #include<FFT.h>
 

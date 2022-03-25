@@ -223,26 +223,30 @@ void FD_Hilbert(float* y){
 
 void FD_Hilbert_fast(float*y){
 
+	float complex *x = (float complex*)malloc(N_SAMPLE * sizeof(float complex));
+
 	for(uint32_t n=0;n<N_SAMPLE;n++){
-		vec[n]=y[n];
+		x[n]=y[n];
 	}
 
-	FFT(vec,N_SAMPLE);
+	FFT(x,N_SAMPLE);
 
 	//DELETE NEGATIVE
 	for(uint32_t n=0;n<N_SAMPLE;n++){
 		if (n>0 && n<N_SAMPLE/2){
-			vec[n] = 2*vec[n];
+			x[n] = 2*x[n];
 		} else if(n>N_SAMPLE/2) {
-			vec[n]=0;
+			x[n]=0;
 		}
 	}
 
-	IFFT(vec,N_SAMPLE);
+	IFFT(x,N_SAMPLE);
 
 	for(uint32_t n=0;n<N_SAMPLE;n++){
-		float hil = cimagf(vec[n]);
+		float hil = cimagf(x[n]);
 		float signal = y[n];
 		y[n] = sqrt(hil*hil + signal*signal);
 	}
+	 free(x);
+	 x = NULL;
 }

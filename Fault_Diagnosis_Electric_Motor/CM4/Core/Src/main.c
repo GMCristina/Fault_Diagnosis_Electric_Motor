@@ -29,6 +29,8 @@
 #include <Fault_Diagnosis.h>
 #include <FFT.h>
 
+#include <stdlib.h>
+
 #define ARM_MATH_CM4
 #include <arm_math.h>
 #include <arm_const_structs.h>
@@ -162,9 +164,12 @@ int main(void)
   //arm_rfft_fast_instance_f32 S;
   //arm_rfft_fast_init_f32(&S,N_SAMPLE);
   //arm_rfft_fast_f32(&S, y_1,yf,0);
+/*
+  float complex *out = (float complex*)malloc(N_SAMPLE * sizeof(float complex));
 
-
-
+  free(out);
+   out = NULL;
+*/
   setvbuf( stdin, NULL, _IONBF, 0 );
 
   ADE9000_Setup();
