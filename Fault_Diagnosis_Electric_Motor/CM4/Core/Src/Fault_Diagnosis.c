@@ -220,3 +220,29 @@ void FD_Hilbert(float* y){
 
 
 }
+
+void FD_Hilbert_fast(float*y){
+
+	for(uint32_t n=0;n<N_SAMPLE;n++){
+		vec[n]=y[n];
+	}
+
+	FFT(vec,N_SAMPLE);
+
+	//DELETE NEGATIVE
+	for(uint32_t n=0;n<N_SAMPLE;n++){
+		if (n>0 && n<N_SAMPLE/2){
+			vec[n] = 2*vec[n];
+		} else if(n>N_SAMPLE/2) {
+			vec[n]=0;
+		}
+	}
+
+	IFFT(vec,N_SAMPLE);
+
+	for(uint32_t n=0;n<N_SAMPLE;n++){
+		float hil = cimagf(vec[n]);
+		float signal = y[n];
+		y[n] = sqrt(hil*hil + signal*signal);
+	}
+}

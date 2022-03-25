@@ -27,6 +27,7 @@
 #include <ADE9000CalibrationInputs.h>
 #include <ADE9000_Calibration.h>
 #include <Fault_Diagnosis.h>
+#include <FFT.h>
 
 #define ARM_MATH_CM4
 #include <arm_math.h>
@@ -163,6 +164,7 @@ int main(void)
   //arm_rfft_fast_f32(&S, y_1,yf,0);
 
 
+
   setvbuf( stdin, NULL, _IONBF, 0 );
 
   ADE9000_Setup();
@@ -219,7 +221,8 @@ int main(void)
 	 printf("%f\r\n",ia[i].data_float);
   }
 
-  FD_Hilbert(&ia[0].data_float);
+ // FD_Hilbert(&ia[0].data_float);
+  FD_Hilbert_fast(&ia[0].data_float);
 
   //FD_Wavedec_zpd(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);

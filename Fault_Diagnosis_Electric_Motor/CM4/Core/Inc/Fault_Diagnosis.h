@@ -9,6 +9,7 @@
 #define INC_FAULT_DIAGNOSIS_H_
 
 #include<ADE9000_API.h>
+#include<FFT.h>
 
 
 
@@ -36,6 +37,8 @@ void FD_Wavedec_sym(float* dec, uint16_t* dec_dim,float* y);
 void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed);
 
 void FD_Hilbert(float*y);
+
+void FD_Hilbert_fast(float*y);
 
 
 
