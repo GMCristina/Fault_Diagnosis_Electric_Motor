@@ -16,7 +16,7 @@
 float LoD [DIM_FILTER_WAVELET] = {0.0033,-0.0126,-0.0062,0.0776,-0.0322,-0.2423,0.1384,0.7243,0.6038,0.1601};
 float HiD [DIM_FILTER_WAVELET] = {-0.1601,0.6038,-0.7243,0.1384,0.2423,-0.0322,-0.0776,-0.0062,0.0126,0.0033};
 
-float Wavelet_dec[N_DEC_WAVELET];
+//float Wavelet_dec[N_DEC_WAVELET];
 uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 
 //float FFT_r[N_SAMPLE/2 +1];
@@ -176,7 +176,7 @@ void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed){
 }
 
 
-
+/*
 void FD_Hilbert(float* y){
 
 	float* FFT_r = &Wavelet_dec[0];
@@ -220,6 +220,7 @@ void FD_Hilbert(float* y){
 
 
 }
+*/
 
 void FD_Hilbert_fast(float*y){
 

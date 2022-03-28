@@ -174,6 +174,9 @@ int main(void)
 
   ADE9000_Setup();
 
+  union DATA * ia = (union DATA *)malloc(N_SAMPLE * sizeof(union DATA));
+
+
 
   uint16_t index = 0;
   uint32_t start;
@@ -228,6 +231,8 @@ int main(void)
 
  // FD_Hilbert(&ia[0].data_float);
   FD_Hilbert_fast(&ia[0].data_float);
+
+  float * Wavelet_dec = (float *)malloc(N_DEC_WAVELET * sizeof(union DATA));
 
   //FD_Wavedec_zpd(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);

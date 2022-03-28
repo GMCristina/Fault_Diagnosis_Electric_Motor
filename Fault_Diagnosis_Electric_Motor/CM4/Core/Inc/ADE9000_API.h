@@ -12,12 +12,12 @@
 #include "main.h"
 #include <stdio.h>
 
-#define ACQUISITION_PERIOD 1 //seconds
+#define ACQUISITION_PERIOD 1.024 //seconds
 #define ACQUISITION_FREQ 8000//8000 //HZ
 //16 pagine, 16 campioni per pagina
 //32KHz 8ms tot, 0.5ms per pagina
 //8KHz 32ms tot, 2ms per pagina
-#define N_BUFFER ((ACQUISITION_PERIOD*ACQUISITION_FREQ)/WAVEFORM_BUFFER_DIM + ((ACQUISITION_PERIOD*ACQUISITION_FREQ)%WAVEFORM_BUFFER_DIM!=0))
+#define N_BUFFER (int32_t)((ACQUISITION_PERIOD*ACQUISITION_FREQ)/WAVEFORM_BUFFER_DIM) //+ ((ACQUISITION_PERIOD*ACQUISITION_FREQ)%WAVEFORM_BUFFER_DIM!=0))
 #define N_SAMPLE (WAVEFORM_BUFFER_DIM*N_BUFFER) //n_buffer x dim_buffer(256)
 #define BURST_READ_N (WAVEFORM_BUFFER_DIM/2) // metà buffer (16samp*8pagine)
 
@@ -84,7 +84,7 @@ extern SPI_HandleTypeDef hspi1;
 extern int8_t flag_read;
 extern int32_t n_int;
 
-extern union DATA ia[N_SAMPLE];
+//extern union DATA ia[N_SAMPLE];
 //va[N_SAMPLE],
 
 uint16_t ADE9000_SPI_Read_16(uint16_t Address);

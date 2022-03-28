@@ -11,7 +11,7 @@
 int8_t flag_read = 0;
 int32_t n_int = 0;
 
-union DATA  ia[N_SAMPLE];
+//union DATA  ia[N_SAMPLE];
 //va[N_SAMPLE],
 
 void ADE9000_Setup(){
