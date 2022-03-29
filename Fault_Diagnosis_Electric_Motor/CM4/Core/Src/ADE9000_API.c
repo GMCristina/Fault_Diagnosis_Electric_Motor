@@ -78,6 +78,9 @@ void ADE9000_Setup(){
 	//Start ADE9000 measurement
 	value_reg_16 = 0x0001;
 	ADE9000_SPI_Write_16(ADDR_RUN, value_reg_16);
+
+	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
+	printf("status0 reg: %d\r\n",value_reg_32);
 }
 
 //power-on sequence

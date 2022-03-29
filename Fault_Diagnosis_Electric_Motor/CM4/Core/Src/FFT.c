@@ -43,7 +43,7 @@ void order(float complex* f1, int N)
   app=NULL;
 }
 
-void order_inplace (float complex* f, int N){
+void orderInplace (float complex* f, int N){
     int j;
     float complex app;
 
@@ -58,8 +58,8 @@ void order_inplace (float complex* f, int N){
 }
 
 void FFT(float complex* f, int N){
-	order(f, N);
-	//order_inplace(f,N);
+	//order(f, N);
+	orderInplace(f,N);
 	uint32_t step = log2_c(N);
 /*
 	float complex *W = (float complex*)malloc(N_SAMPLE/2 * sizeof(float complex));
