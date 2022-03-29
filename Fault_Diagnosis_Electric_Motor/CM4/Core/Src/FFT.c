@@ -58,7 +58,7 @@ void orderInplace (float complex* f, int N){
 }
 
 void FFT(float complex* f, int N){
-	//order(f, N);
+
 	orderInplace(f,N);
 	uint32_t step = log2_c(N);
 /*
