@@ -230,6 +230,9 @@ void FD_Hilbert_fast(float*y){
 		x[n]=y[n];
 	}
 
+	free(y);
+	y=NULL;
+
 	FFT(x,N_SAMPLE);
 
 	//DELETE NEGATIVE
@@ -243,9 +246,12 @@ void FD_Hilbert_fast(float*y){
 
 	IFFT(x,N_SAMPLE);
 
+	y = (float *)malloc(N_SAMPLE * sizeof(float));
+
+
 	for(uint32_t n=0;n<N_SAMPLE;n++){
 		float hil = cimagf(x[n]);
-		float signal = y[n];
+		float signal = creal(x[n]);//y[n];
 		y[n] = sqrt(hil*hil + signal*signal);
 	}
 	 free(x);
