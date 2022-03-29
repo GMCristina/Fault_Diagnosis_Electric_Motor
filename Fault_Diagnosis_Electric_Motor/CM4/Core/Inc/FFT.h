@@ -20,7 +20,8 @@
 
 int log2_c(int N);
 int reverse(int N, int n);
-void order( float complex* f1, int N);
+void order(float complex* f1, int N);
+void order_inplace(float complex* f, int N);
 void FFT(float complex* f, int N);
 void IFFT(float complex* f, int N);
 

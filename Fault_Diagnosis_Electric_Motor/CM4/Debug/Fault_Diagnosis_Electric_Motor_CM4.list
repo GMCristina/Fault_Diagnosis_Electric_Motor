@@ -23,23 +23,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 00000030  00000000  00000000  00020238  2**0
                   CONTENTS, READONLY
- 10 .debug_info   00022f0b  00000000  00000000  00020268  2**0
+ 10 .debug_info   00022f6f  00000000  00000000  00020268  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 000037a8  00000000  00000000  00043173  2**0
+ 11 .debug_abbrev 000037a8  00000000  00000000  000431d7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 12 .debug_aranges 00000ea0  00000000  00000000  00046920  2**3
+ 12 .debug_aranges 00000ea8  00000000  00000000  00046980  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_ranges 00000d98  00000000  00000000  000477c0  2**3
+ 13 .debug_ranges 00000da0  00000000  00000000  00047828  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  0003cd19  00000000  00000000  00048558  2**0
+ 14 .debug_macro  0003cd19  00000000  00000000  000485c8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   000149e6  00000000  00000000  00085271  2**0
+ 15 .debug_line   00014a2a  00000000  00000000  000852e1  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    00187256  00000000  00000000  00099c57  2**0
+ 16 .debug_str    00187264  00000000  00000000  00099d0b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      00000053  00000000  00000000  00220ead  2**0
+ 17 .comment      00000053  00000000  00000000  00220f6f  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  000055f8  00000000  00000000  00220f00  2**2
+ 18 .debug_frame  0000561c  00000000  00000000  00220fc4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2473,6 +2473,10 @@ void order(float complex* f1, int N)
 	...
 
 08101978 <FFT>:
+            f[j]=app;
+        }
+    }
+}
 
 void FFT(float complex* f, int N){
  8101978:	e92d 43b0 	stmdb	sp!, {r4, r5, r7, r8, r9, lr}
@@ -2484,6 +2488,7 @@ void FFT(float complex* f, int N){
  8101984:	6839      	ldr	r1, [r7, #0]
  8101986:	6878      	ldr	r0, [r7, #4]
  8101988:	f7ff ffaf 	bl	81018ea <order>
+	//order_inplace(f,N);
 	uint32_t step = log2_c(N);
  810198c:	6838      	ldr	r0, [r7, #0]
  810198e:	f7ff ff65 	bl	810185c <log2_c>
