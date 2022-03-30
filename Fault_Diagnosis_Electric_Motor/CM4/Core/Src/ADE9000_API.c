@@ -84,7 +84,8 @@ void ADE9000_Setup(){
 	value_reg_16 = 0x0001;
 	ADE9000_SPI_Write_16(ADDR_RUN, value_reg_16);
 
-	//value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
+	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
+	ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
 	//printf("status0 reg: %d\r\n",value_reg_32);
 }
 
