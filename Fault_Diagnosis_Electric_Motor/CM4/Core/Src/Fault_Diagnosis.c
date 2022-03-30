@@ -224,19 +224,6 @@ void FD_Hilbert(float* y){
 */
 
 void FD_Hilbert_fast(float*y){
-/*
-	float complex *x = (float complex*)malloc(N_SAMPLE * sizeof(float complex));
-
-	for(uint32_t n=0;n<N_SAMPLE;n++){
-		x[n]=y[n];
-	}
-
-	free(y);
-	y=NULL;
-
-	*/
-
-	//y = (float*)realloc(y,2*N_SAMPLE*sizeof(float));
 
     int32_t j = N_SAMPLE -1;
     for(int32_t i = 2*N_SAMPLE-1;i>=0;i--){
@@ -261,23 +248,17 @@ void FD_Hilbert_fast(float*y){
 
 	IFFT(x,N_SAMPLE);
 
-	//y = (float *)malloc(N_SAMPLE * sizeof(float));
-
 
 	for(uint32_t n=0;n<N_SAMPLE;n++){
 		float hil = cimagf(x[n]);
-		float signal = creal(x[n]);//y[n];
-		//y[n] = sqrt(hil*hil + signal*signal);
+		float signal = creal(x[n]);
 		x[n] = sqrt(hil*hil + signal*signal);
 	}
 
-	// free(x);
-	// x = NULL;
 
 	y= (float*) x;
 	for(int32_t n=0;n<N_SAMPLE;n++){
 		y[n]=x[n];
 	}
 
-	//y = (float*)realloc(y,N_SAMPLE*sizeof(float));
 }
