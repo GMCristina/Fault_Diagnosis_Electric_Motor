@@ -23,9 +23,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 00000030  00000000  00000000  00020238  2**0
                   CONTENTS, READONLY
- 10 .debug_info   0002301f  00000000  00000000  00020268  2**0
+ 10 .debug_info   0002301e  00000000  00000000  00020268  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 00003811  00000000  00000000  00043287  2**0
+ 11 .debug_abbrev 00003811  00000000  00000000  00043286  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  12 .debug_aranges 00000ea8  00000000  00000000  00046a98  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -3842,10 +3842,6 @@ int main(void)
   ADE9000_Setup();
  81023e0:	f7ff f802 	bl	81013e8 <ADE9000_Setup>
 
-  //union DATA * ia = (union DATA *)malloc(N_SAMPLE * sizeof(union DATA));
-  //alloc double for FFT
-  //union DATA * ia = (union DATA *)malloc(2*N_SAMPLE * sizeof(union DATA));
-
   uint16_t index = 0;
  81023e4:	2300      	movs	r3, #0
  81023e6:	84fb      	strh	r3, [r7, #38]	; 0x26
@@ -4011,7 +4007,7 @@ int main(void)
  81024ee:	4826      	ldr	r0, [pc, #152]	; (8102588 <main+0x234>)
  81024f0:	f7ff fe64 	bl	81021bc <FD_Hilbert_fast>
 
-  //float * Wavelet_dec = (float *)malloc(N_DEC_WAVELET * sizeof(union DATA));
+
   for(uint32_t k =0;k<N_DEC_WAVELET;k++){
  81024f4:	2300      	movs	r3, #0
  81024f6:	61fb      	str	r3, [r7, #28]

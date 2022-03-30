@@ -154,10 +154,6 @@ int main(void)
 
   ADE9000_Setup();
 
-  //union DATA * ia = (union DATA *)malloc(N_SAMPLE * sizeof(union DATA));
-  //alloc double for FFT
-  //union DATA * ia = (union DATA *)malloc(2*N_SAMPLE * sizeof(union DATA));
-
   uint16_t index = 0;
   uint32_t start;
   uint32_t value_reg_32 = 0x00020000;
@@ -212,7 +208,7 @@ int main(void)
 
   FD_Hilbert_fast(&ia[0].data_float);
 
-  //float * Wavelet_dec = (float *)malloc(N_DEC_WAVELET * sizeof(union DATA));
+
   for(uint32_t k =0;k<N_DEC_WAVELET;k++){
 	  ia[N_SAMPLE + k].data_float=0;
   	}
