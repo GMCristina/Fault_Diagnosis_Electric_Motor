@@ -22,7 +22,7 @@ extern float LoD [DIM_FILTER_WAVELET];
 extern float HiD [DIM_FILTER_WAVELET];
 
 #define N_LEVEL_WAVELET 10
-#define N_DEC_WAVELET 16465//8273//8273//32083 //dim c da Matlab
+#define N_DEC_WAVELET 32849//8273//8273//32083 //dim c da Matlab
 
 //extern float Wavelet_dec[N_DEC_WAVELET];
 extern uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
@@ -30,6 +30,7 @@ extern uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 //extern float FFT_r[N_SAMPLE/2 +1];
 //extern float FFT_i[N_SAMPLE/2 +1];
 //extern float y_1[N_SAMPLE];
+extern union DATA ia[N_SAMPLE+N_DEC_WAVELET];
 
 extern float Ea;
 extern float Ed [N_LEVEL_WAVELET];

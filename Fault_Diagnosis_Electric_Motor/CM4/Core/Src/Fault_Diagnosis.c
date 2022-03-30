@@ -22,7 +22,8 @@ uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 //float FFT_r[N_SAMPLE/2 +1];
 //float FFT_i[N_SAMPLE/2 +1];
 //float y_1[N_SAMPLE] = {0.957506835434298,0.964888535199277,0.157613081677548,0.970592781760616,0.957166948242946,0.485375648722841,0.800280468888800,0.141886338627215,0.421761282626275,0.915735525189067,0.792207329559554,0.959492426392903,0.655740699156587,0.0357116785741896,0.849129305868777,0.933993247757551};
-
+//float va[N_SAMPLE+N_DEC_WAVELET];
+union DATA ia[N_SAMPLE+N_DEC_WAVELET];
 
 float Ea;
 float Ed [N_LEVEL_WAVELET];
@@ -84,11 +85,11 @@ void FD_Wavedec_sym(float* dec, uint16_t* dec_dim, float* y){
 	uint16_t index_border;
 
 	uint16_t index_dec = 0;
-
-	for(int16_t k =0;k<N_DEC_WAVELET;k++){
+/*
+	for(uint32_t k =0;k<N_DEC_WAVELET;k++){
 		dec[k]=0;
 	}
-
+*/
 	for(uint16_t k=0; k<N_LEVEL_WAVELET; k++){
 		//DIM
 		Wavelet_dec_dim[k]=dim_coeff;
@@ -235,7 +236,7 @@ void FD_Hilbert_fast(float*y){
 
 	*/
 
-	y = (float*)realloc(y,2*N_SAMPLE*sizeof(float));
+	//y = (float*)realloc(y,2*N_SAMPLE*sizeof(float));
 
     int32_t j = N_SAMPLE -1;
     for(int32_t i = 2*N_SAMPLE-1;i>=0;i--){
@@ -260,14 +261,23 @@ void FD_Hilbert_fast(float*y){
 
 	IFFT(x,N_SAMPLE);
 
-	y = (float *)malloc(N_SAMPLE * sizeof(float));
+	//y = (float *)malloc(N_SAMPLE * sizeof(float));
 
 
 	for(uint32_t n=0;n<N_SAMPLE;n++){
 		float hil = cimagf(x[n]);
 		float signal = creal(x[n]);//y[n];
-		y[n] = sqrt(hil*hil + signal*signal);
+		//y[n] = sqrt(hil*hil + signal*signal);
+		x[n] = sqrt(hil*hil + signal*signal);
 	}
-	 free(x);
-	 x = NULL;
+
+	// free(x);
+	// x = NULL;
+
+	y= (float*) x;
+	for(int32_t n=0;n<N_SAMPLE;n++){
+		y[n]=x[n];
+	}
+
+	//y = (float*)realloc(y,N_SAMPLE*sizeof(float));
 }
