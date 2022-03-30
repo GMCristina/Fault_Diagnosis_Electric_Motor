@@ -74,6 +74,10 @@ void ADE9000_Setup(){
 	ADE9000_SPI_Write_32(ADDR_MASK1,value_reg_32);
 	value_reg_32 = ADE9000_SPI_Read_32(ADDR_MASK1);
 
+	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
+	ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
+
 	//ADDR_RUN
 	//Start ADE9000 measurement
 	value_reg_16 = 0x0001;

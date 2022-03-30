@@ -223,7 +223,7 @@ void FD_Hilbert(float* y){
 */
 
 void FD_Hilbert_fast(float*y){
-
+/*
 	float complex *x = (float complex*)malloc(N_SAMPLE * sizeof(float complex));
 
 	for(uint32_t n=0;n<N_SAMPLE;n++){
@@ -233,7 +233,7 @@ void FD_Hilbert_fast(float*y){
 	free(y);
 	y=NULL;
 
-	/*
+	*/
 
 	y = (float*)realloc(y,2*N_SAMPLE*sizeof(float));
 
@@ -246,7 +246,7 @@ void FD_Hilbert_fast(float*y){
     }
 
     float complex* x = (float complex*)y;
-*/
+
 	FFT(x,N_SAMPLE);
 
 	//DELETE NEGATIVE
