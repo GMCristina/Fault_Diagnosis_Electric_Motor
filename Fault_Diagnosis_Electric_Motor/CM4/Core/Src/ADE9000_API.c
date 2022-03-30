@@ -9,7 +9,7 @@
 #include "main.h"
 
 int8_t flag_read = 0;
-int32_t n_int = 0;
+
 
 //union DATA  ia[N_SAMPLE];
 //va[N_SAMPLE],
@@ -74,6 +74,7 @@ void ADE9000_Setup(){
 	ADE9000_SPI_Write_32(ADDR_MASK1,value_reg_32);
 	value_reg_32 = ADE9000_SPI_Read_32(ADDR_MASK1);
 
+	//Interrupt problem (solution???)
 	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
 	ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
 	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);

@@ -150,26 +150,6 @@ int main(void)
 
   ADE9000_Power();
 
-
-/*
-  float yf[2*N_SAMPLE];
-  for(uint32_t i=0; i<2*N_SAMPLE; i++){
- 	  yf[i]=i;
- 	  i++;
- 	  yf[i]=0;
-   }
-
-  arm_cfft_f32(&arm_cfft_sR_f32_len32, yf, 0, 1);
-*/
-  //arm_rfft_fast_instance_f32 S;
-  //arm_rfft_fast_init_f32(&S,N_SAMPLE);
-  //arm_rfft_fast_f32(&S, y_1,yf,0);
-/*
-  float complex *out = (float complex*)malloc(N_SAMPLE * sizeof(float complex));
-
-  free(out);
-   out = NULL;
-*/
   setvbuf( stdin, NULL, _IONBF, 0 );
 
   ADE9000_Setup();
@@ -481,38 +461,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	// If the interrupt source is pin IRQ0
 	if (GPIO_Pin == ADE9000_IRQ0_Pin)
 	{
-		//printf("IRQ0s\r\n");
 		flag_read = 1;
-		n_int ++;
-		//uint32_t value_reg_32 = 0x00020000;
-		//ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
-		/*
-		  uint16_t value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
-		  value_reg_16 = (value_reg_16>>12)&0x0F;
-		  printf("pgi: %i\r\n",value_reg_16);
-		  uint32_t value_reg_32 = 0x00020000;
-		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
-		*/
-		//printf("IRQ0e\r\n");
-
-
-/*
-		uint32_t value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
-		  if((value_reg_32 & 0x00020000)!=0){
-			  //last page full
-			  uint16_t value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
-			  flag_read = (value_reg_16>>12)&0x0F;
-			  printf("Int: %i\r\n",flag_read);
-			  //clear interrupt
-			 value_reg_32 = value_reg_32 & 0x00020000;
-			 ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
-		  }
-*/
 
 	}
 	if (GPIO_Pin == ADE9000_IRQ1_Pin)
 		{
-			//printf("IRQ1\r\n");
+
 		}
 }
 /* USER CODE END 4 */
