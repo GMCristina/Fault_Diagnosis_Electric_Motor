@@ -12,7 +12,7 @@
 #include "main.h"
 #include <stdio.h>
 
-#define ACQUISITION_PERIOD 1.024//1.024 //seconds
+#define ACQUISITION_PERIOD 2.048//1.024 //seconds
 #define ACQUISITION_FREQ 8000//8000 //HZ
 //16 pagine, 16 campioni per pagina
 //32KHz 8ms tot, 0.5ms per pagina

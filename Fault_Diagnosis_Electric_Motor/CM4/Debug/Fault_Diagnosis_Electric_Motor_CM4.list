@@ -35,9 +35,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  15 .debug_line   00014a57  00000000  00000000  00085309  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    00187263  00000000  00000000  00099d60  2**0
+ 16 .debug_str    00187264  00000000  00000000  00099d60  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      00000053  00000000  00000000  00220fc3  2**0
+ 17 .comment      00000053  00000000  00000000  00220fc4  2**0
                   CONTENTS, READONLY
  18 .debug_frame  0000563c  00000000  00000000  00221018  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -2845,7 +2845,7 @@ void FD_Wavedec_sym(float* dec, uint16_t* dec_dim, float* y){
  8101c94:	60b9      	str	r1, [r7, #8]
  8101c96:	607a      	str	r2, [r7, #4]
 	uint16_t dim_y = N_SAMPLE;
- 8101c98:	f44f 5300 	mov.w	r3, #8192	; 0x2000
+ 8101c98:	f44f 4380 	mov.w	r3, #16384	; 0x4000
  8101c9c:	84fb      	strh	r3, [r7, #38]	; 0x26
 	uint16_t dim_conv = dim_y + DIM_FILTER_WAVELET - 1;
  8101c9e:	8cfb      	ldrh	r3, [r7, #38]	; 0x26
@@ -2880,7 +2880,7 @@ void FD_Wavedec_sym(float* dec, uint16_t* dec_dim, float* y){
  8101ccc:	b29b      	uxth	r3, r3
  8101cce:	83fb      	strh	r3, [r7, #30]
  8101cd0:	f9b7 301e 	ldrsh.w	r3, [r7, #30]
- 8101cd4:	f242 0250 	movw	r2, #8272	; 0x2050
+ 8101cd4:	f244 0250 	movw	r2, #16464	; 0x4050
  8101cd8:	4293      	cmp	r3, r2
  8101cda:	ddeb      	ble.n	8101cb4 <FD_Wavedec_sym+0x28>
 	}
@@ -3568,16 +3568,16 @@ void FD_Hilbert_fast(float*y){
 	*/
 
 	y = (float*)realloc(y,2*N_SAMPLE*sizeof(float));
- 8102204:	f44f 3180 	mov.w	r1, #65536	; 0x10000
+ 8102204:	f44f 3100 	mov.w	r1, #131072	; 0x20000
  8102208:	6878      	ldr	r0, [r7, #4]
  810220a:	f006 fb79 	bl	8108900 <realloc>
  810220e:	6078      	str	r0, [r7, #4]
 
     int32_t j = N_SAMPLE -1;
- 8102210:	f641 73ff 	movw	r3, #8191	; 0x1fff
+ 8102210:	f643 73ff 	movw	r3, #16383	; 0x3fff
  8102214:	627b      	str	r3, [r7, #36]	; 0x24
     for(int32_t i = 2*N_SAMPLE-1;i>=0;i--){
- 8102216:	f643 73ff 	movw	r3, #16383	; 0x3fff
+ 8102216:	f647 73ff 	movw	r3, #32767	; 0x7fff
  810221a:	623b      	str	r3, [r7, #32]
  810221c:	e019      	b.n	8102252 <FD_Hilbert_fast+0x56>
        y[i] = 0;
@@ -3620,7 +3620,7 @@ void FD_Hilbert_fast(float*y){
  810225a:	617b      	str	r3, [r7, #20]
 
 	FFT(x,N_SAMPLE);
- 810225c:	f44f 5100 	mov.w	r1, #8192	; 0x2000
+ 810225c:	f44f 4180 	mov.w	r1, #16384	; 0x4000
  8102260:	6978      	ldr	r0, [r7, #20]
  8102262:	f7ff fb95 	bl	8101990 <FFT>
 
@@ -3634,7 +3634,7 @@ void FD_Hilbert_fast(float*y){
  810226e:	2b00      	cmp	r3, #0
  8102270:	d01c      	beq.n	81022ac <FD_Hilbert_fast+0xb0>
  8102272:	69fb      	ldr	r3, [r7, #28]
- 8102274:	f5b3 5f80 	cmp.w	r3, #4096	; 0x1000
+ 8102274:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
  8102278:	d218      	bcs.n	81022ac <FD_Hilbert_fast+0xb0>
 			x[n] = 2*x[n];
  810227a:	69fb      	ldr	r3, [r7, #28]
@@ -3658,7 +3658,7 @@ void FD_Hilbert_fast(float*y){
  81022aa:	e00c      	b.n	81022c6 <FD_Hilbert_fast+0xca>
 		} else if(n>N_SAMPLE/2) {
  81022ac:	69fb      	ldr	r3, [r7, #28]
- 81022ae:	f5b3 5f80 	cmp.w	r3, #4096	; 0x1000
+ 81022ae:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
  81022b2:	d908      	bls.n	81022c6 <FD_Hilbert_fast+0xca>
 			x[n]=0;
  81022b4:	69fb      	ldr	r3, [r7, #28]
@@ -3675,18 +3675,18 @@ void FD_Hilbert_fast(float*y){
  81022c8:	3301      	adds	r3, #1
  81022ca:	61fb      	str	r3, [r7, #28]
  81022cc:	69fb      	ldr	r3, [r7, #28]
- 81022ce:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
+ 81022ce:	f5b3 4f80 	cmp.w	r3, #16384	; 0x4000
  81022d2:	d3cb      	bcc.n	810226c <FD_Hilbert_fast+0x70>
 		}
 	}
 
 	IFFT(x,N_SAMPLE);
- 81022d4:	f44f 5100 	mov.w	r1, #8192	; 0x2000
+ 81022d4:	f44f 4180 	mov.w	r1, #16384	; 0x4000
  81022d8:	6978      	ldr	r0, [r7, #20]
  81022da:	f7ff fc61 	bl	8101ba0 <IFFT>
 
 	y = (float *)malloc(N_SAMPLE * sizeof(float));
- 81022de:	f44f 4000 	mov.w	r0, #32768	; 0x8000
+ 81022de:	f44f 3080 	mov.w	r0, #65536	; 0x10000
  81022e2:	f005 fb43 	bl	810796c <malloc>
  81022e6:	4603      	mov	r3, r0
  81022e8:	607b      	str	r3, [r7, #4]
@@ -3743,7 +3743,7 @@ void FD_Hilbert_fast(float*y){
  810235a:	3301      	adds	r3, #1
  810235c:	61bb      	str	r3, [r7, #24]
  810235e:	69bb      	ldr	r3, [r7, #24]
- 8102360:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
+ 8102360:	f5b3 4f80 	cmp.w	r3, #16384	; 0x4000
  8102364:	d3c4      	bcc.n	81022f0 <FD_Hilbert_fast+0xf4>
 	}
 	 free(x);
@@ -3775,12 +3775,12 @@ int main(void)
 /* USER CODE BEGIN Boot_Mode_Sequence_1 */
   /*HW semaphore Clock enable*/
   __HAL_RCC_HSEM_CLK_ENABLE();
- 8102382:	4b81      	ldr	r3, [pc, #516]	; (8102588 <main+0x20c>)
+ 8102382:	4b80      	ldr	r3, [pc, #512]	; (8102584 <main+0x208>)
  8102384:	f8d3 30e0 	ldr.w	r3, [r3, #224]	; 0xe0
- 8102388:	4a7f      	ldr	r2, [pc, #508]	; (8102588 <main+0x20c>)
+ 8102388:	4a7e      	ldr	r2, [pc, #504]	; (8102584 <main+0x208>)
  810238a:	f043 7300 	orr.w	r3, r3, #33554432	; 0x2000000
  810238e:	f8c2 30e0 	str.w	r3, [r2, #224]	; 0xe0
- 8102392:	4b7d      	ldr	r3, [pc, #500]	; (8102588 <main+0x20c>)
+ 8102392:	4b7c      	ldr	r3, [pc, #496]	; (8102584 <main+0x208>)
  8102394:	f8d3 30e0 	ldr.w	r3, [r3, #224]	; 0xe0
  8102398:	f003 7300 	and.w	r3, r3, #33554432	; 0x2000000
  810239c:	607b      	str	r3, [r7, #4]
@@ -3802,21 +3802,21 @@ int main(void)
  81023b0:	f001 f8ac 	bl	810350c <HAL_PWREx_EnterSTOPMode>
   /* Clear HSEM flag */
   __HAL_HSEM_CLEAR_FLAG(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
- 81023b4:	4b75      	ldr	r3, [pc, #468]	; (810258c <main+0x210>)
+ 81023b4:	4b74      	ldr	r3, [pc, #464]	; (8102588 <main+0x20c>)
  81023b6:	681b      	ldr	r3, [r3, #0]
  81023b8:	091b      	lsrs	r3, r3, #4
  81023ba:	f003 030f 	and.w	r3, r3, #15
  81023be:	2b07      	cmp	r3, #7
  81023c0:	d108      	bne.n	81023d4 <main+0x58>
- 81023c2:	4b73      	ldr	r3, [pc, #460]	; (8102590 <main+0x214>)
+ 81023c2:	4b72      	ldr	r3, [pc, #456]	; (810258c <main+0x210>)
  81023c4:	f8d3 3104 	ldr.w	r3, [r3, #260]	; 0x104
- 81023c8:	4a71      	ldr	r2, [pc, #452]	; (8102590 <main+0x214>)
+ 81023c8:	4a70      	ldr	r2, [pc, #448]	; (810258c <main+0x210>)
  81023ca:	f043 0301 	orr.w	r3, r3, #1
  81023ce:	f8c2 3104 	str.w	r3, [r2, #260]	; 0x104
  81023d2:	e007      	b.n	81023e4 <main+0x68>
- 81023d4:	4b6e      	ldr	r3, [pc, #440]	; (8102590 <main+0x214>)
+ 81023d4:	4b6d      	ldr	r3, [pc, #436]	; (810258c <main+0x210>)
  81023d6:	f8d3 3114 	ldr.w	r3, [r3, #276]	; 0x114
- 81023da:	4a6d      	ldr	r2, [pc, #436]	; (8102590 <main+0x214>)
+ 81023da:	4a6c      	ldr	r2, [pc, #432]	; (810258c <main+0x210>)
  81023dc:	f043 0301 	orr.w	r3, r3, #1
  81023e0:	f8c2 3114 	str.w	r3, [r2, #276]	; 0x114
 
@@ -3843,7 +3843,7 @@ int main(void)
  81023f4:	f7ff f87c 	bl	81014f0 <ADE9000_Power>
 
   setvbuf( stdin, NULL, _IONBF, 0 );
- 81023f8:	4b66      	ldr	r3, [pc, #408]	; (8102594 <main+0x218>)
+ 81023f8:	4b65      	ldr	r3, [pc, #404]	; (8102590 <main+0x214>)
  81023fa:	681b      	ldr	r3, [r3, #0]
  81023fc:	6858      	ldr	r0, [r3, #4]
  81023fe:	2300      	movs	r3, #0
@@ -3855,7 +3855,7 @@ int main(void)
  8102408:	f7fe ffee 	bl	81013e8 <ADE9000_Setup>
 
   union DATA * ia = (union DATA *)malloc(N_SAMPLE * sizeof(union DATA));
- 810240c:	f44f 4000 	mov.w	r0, #32768	; 0x8000
+ 810240c:	f44f 3080 	mov.w	r0, #65536	; 0x10000
  8102410:	f005 faac 	bl	810796c <malloc>
  8102414:	4603      	mov	r3, r0
  8102416:	61bb      	str	r3, [r7, #24]
@@ -3878,13 +3878,13 @@ int main(void)
  8102426:	e057      	b.n	81024d8 <main+0x15c>
  		  while(flag_read == 0){}
  8102428:	bf00      	nop
- 810242a:	4b5b      	ldr	r3, [pc, #364]	; (8102598 <main+0x21c>)
+ 810242a:	4b5a      	ldr	r3, [pc, #360]	; (8102594 <main+0x218>)
  810242c:	f993 3000 	ldrsb.w	r3, [r3]
  8102430:	2b00      	cmp	r3, #0
  8102432:	d0fa      	beq.n	810242a <main+0xae>
 
  		  flag_read = 0;
- 8102434:	4b58      	ldr	r3, [pc, #352]	; (8102598 <main+0x21c>)
+ 8102434:	4b57      	ldr	r3, [pc, #348]	; (8102594 <main+0x218>)
  8102436:	2200      	movs	r2, #0
  8102438:	701a      	strb	r2, [r3, #0]
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
@@ -3904,7 +3904,7 @@ int main(void)
 		  printf("pg: %i\r\n",value_reg_16);
  8102456:	89fb      	ldrh	r3, [r7, #14]
  8102458:	4619      	mov	r1, r3
- 810245a:	4850      	ldr	r0, [pc, #320]	; (810259c <main+0x220>)
+ 810245a:	484f      	ldr	r0, [pc, #316]	; (8102598 <main+0x21c>)
  810245c:	f006 f9c2 	bl	81087e4 <iprintf>
  		  start = WAVEFORM_BUFFER_START_ADDR;
  8102460:	f44f 6300 	mov.w	r3, #2048	; 0x800
@@ -3930,14 +3930,14 @@ int main(void)
 
  		  while(flag_read == 0){}
  8102480:	bf00      	nop
- 8102482:	4b45      	ldr	r3, [pc, #276]	; (8102598 <main+0x21c>)
+ 8102482:	4b44      	ldr	r3, [pc, #272]	; (8102594 <main+0x218>)
  8102484:	f993 3000 	ldrsb.w	r3, [r3]
  8102488:	2b00      	cmp	r3, #0
  810248a:	d0fa      	beq.n	8102482 <main+0x106>
 
 
  		  flag_read = 0;
- 810248c:	4b42      	ldr	r3, [pc, #264]	; (8102598 <main+0x21c>)
+ 810248c:	4b41      	ldr	r3, [pc, #260]	; (8102594 <main+0x218>)
  810248e:	2200      	movs	r2, #0
  8102490:	701a      	strb	r2, [r3, #0]
  		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
@@ -3956,7 +3956,7 @@ int main(void)
  		  printf("pg: %i\r\n",value_reg_16);
  81024ae:	89fb      	ldrh	r3, [r7, #14]
  81024b0:	4619      	mov	r1, r3
- 81024b2:	483a      	ldr	r0, [pc, #232]	; (810259c <main+0x220>)
+ 81024b2:	4839      	ldr	r0, [pc, #228]	; (8102598 <main+0x21c>)
  81024b4:	f006 f996 	bl	81087e4 <iprintf>
  		  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
  81024b8:	f44f 6340 	mov.w	r3, #3072	; 0xc00
@@ -3980,7 +3980,7 @@ int main(void)
  81024d6:	84fb      	strh	r3, [r7, #38]	; 0x26
   while(index < N_SAMPLE){
  81024d8:	8cfb      	ldrh	r3, [r7, #38]	; 0x26
- 81024da:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
+ 81024da:	f5b3 4f80 	cmp.w	r3, #16384	; 0x4000
  81024de:	d3a3      	bcc.n	8102428 <main+0xac>
 
 
@@ -3990,12 +3990,12 @@ int main(void)
 
 
   ADE9000_Conv_ADC_I(ia,N_SAMPLE);
- 81024e4:	f44f 5100 	mov.w	r1, #8192	; 0x2000
+ 81024e4:	f44f 4180 	mov.w	r1, #16384	; 0x4000
  81024e8:	69b8      	ldr	r0, [r7, #24]
  81024ea:	f7ff f97d 	bl	81017e8 <ADE9000_Conv_ADC_I>
 
   printf("IA\r\n");
- 81024ee:	482c      	ldr	r0, [pc, #176]	; (81025a0 <main+0x224>)
+ 81024ee:	482b      	ldr	r0, [pc, #172]	; (810259c <main+0x220>)
  81024f0:	f006 f9fe 	bl	81088f0 <puts>
   for(uint32_t i = 0; i<N_SAMPLE; i++){
  81024f4:	2300      	movs	r3, #0
@@ -4011,14 +4011,14 @@ int main(void)
  8102506:	f7fe f8a7 	bl	8100658 <__aeabi_f2d>
  810250a:	4602      	mov	r2, r0
  810250c:	460b      	mov	r3, r1
- 810250e:	4825      	ldr	r0, [pc, #148]	; (81025a4 <main+0x228>)
+ 810250e:	4824      	ldr	r0, [pc, #144]	; (81025a0 <main+0x224>)
  8102510:	f006 f968 	bl	81087e4 <iprintf>
   for(uint32_t i = 0; i<N_SAMPLE; i++){
  8102514:	6a3b      	ldr	r3, [r7, #32]
  8102516:	3301      	adds	r3, #1
  8102518:	623b      	str	r3, [r7, #32]
  810251a:	6a3b      	ldr	r3, [r7, #32]
- 810251c:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
+ 810251c:	f5b3 4f80 	cmp.w	r3, #16384	; 0x4000
  8102520:	d3eb      	bcc.n	81024fa <main+0x17e>
   }
 
@@ -4029,70 +4029,70 @@ int main(void)
  8102526:	f7ff fe69 	bl	81021fc <FD_Hilbert_fast>
 
   float * Wavelet_dec = (float *)malloc(N_DEC_WAVELET * sizeof(union DATA));
- 810252a:	f248 1044 	movw	r0, #33092	; 0x8144
- 810252e:	f005 fa1d 	bl	810796c <malloc>
- 8102532:	4603      	mov	r3, r0
- 8102534:	613b      	str	r3, [r7, #16]
+ 810252a:	481e      	ldr	r0, [pc, #120]	; (81025a4 <main+0x228>)
+ 810252c:	f005 fa1e 	bl	810796c <malloc>
+ 8102530:	4603      	mov	r3, r0
+ 8102532:	613b      	str	r3, [r7, #16]
 
 
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
- 8102536:	69bb      	ldr	r3, [r7, #24]
- 8102538:	461a      	mov	r2, r3
- 810253a:	491b      	ldr	r1, [pc, #108]	; (81025a8 <main+0x22c>)
- 810253c:	6938      	ldr	r0, [r7, #16]
- 810253e:	f7ff fba5 	bl	8101c8c <FD_Wavedec_sym>
+ 8102534:	69bb      	ldr	r3, [r7, #24]
+ 8102536:	461a      	mov	r2, r3
+ 8102538:	491b      	ldr	r1, [pc, #108]	; (81025a8 <main+0x22c>)
+ 810253a:	6938      	ldr	r0, [r7, #16]
+ 810253c:	f7ff fba6 	bl	8101c8c <FD_Wavedec_sym>
 
   printf("Dec\r\n");
- 8102542:	481a      	ldr	r0, [pc, #104]	; (81025ac <main+0x230>)
- 8102544:	f006 f9d4 	bl	81088f0 <puts>
+ 8102540:	481a      	ldr	r0, [pc, #104]	; (81025ac <main+0x230>)
+ 8102542:	f006 f9d5 	bl	81088f0 <puts>
   for(uint32_t i = 0; i<N_DEC_WAVELET; i++){
- 8102548:	2300      	movs	r3, #0
- 810254a:	61fb      	str	r3, [r7, #28]
- 810254c:	e00f      	b.n	810256e <main+0x1f2>
+ 8102546:	2300      	movs	r3, #0
+ 8102548:	61fb      	str	r3, [r7, #28]
+ 810254a:	e00f      	b.n	810256c <main+0x1f0>
 	  printf("%f\r\n",Wavelet_dec[i]);
- 810254e:	69fb      	ldr	r3, [r7, #28]
- 8102550:	009b      	lsls	r3, r3, #2
- 8102552:	693a      	ldr	r2, [r7, #16]
- 8102554:	4413      	add	r3, r2
- 8102556:	681b      	ldr	r3, [r3, #0]
- 8102558:	4618      	mov	r0, r3
- 810255a:	f7fe f87d 	bl	8100658 <__aeabi_f2d>
- 810255e:	4602      	mov	r2, r0
- 8102560:	460b      	mov	r3, r1
- 8102562:	4810      	ldr	r0, [pc, #64]	; (81025a4 <main+0x228>)
- 8102564:	f006 f93e 	bl	81087e4 <iprintf>
+ 810254c:	69fb      	ldr	r3, [r7, #28]
+ 810254e:	009b      	lsls	r3, r3, #2
+ 8102550:	693a      	ldr	r2, [r7, #16]
+ 8102552:	4413      	add	r3, r2
+ 8102554:	681b      	ldr	r3, [r3, #0]
+ 8102556:	4618      	mov	r0, r3
+ 8102558:	f7fe f87e 	bl	8100658 <__aeabi_f2d>
+ 810255c:	4602      	mov	r2, r0
+ 810255e:	460b      	mov	r3, r1
+ 8102560:	480f      	ldr	r0, [pc, #60]	; (81025a0 <main+0x224>)
+ 8102562:	f006 f93f 	bl	81087e4 <iprintf>
   for(uint32_t i = 0; i<N_DEC_WAVELET; i++){
- 8102568:	69fb      	ldr	r3, [r7, #28]
- 810256a:	3301      	adds	r3, #1
- 810256c:	61fb      	str	r3, [r7, #28]
- 810256e:	69fb      	ldr	r3, [r7, #28]
- 8102570:	f242 0250 	movw	r2, #8272	; 0x2050
- 8102574:	4293      	cmp	r3, r2
- 8102576:	d9ea      	bls.n	810254e <main+0x1d2>
+ 8102566:	69fb      	ldr	r3, [r7, #28]
+ 8102568:	3301      	adds	r3, #1
+ 810256a:	61fb      	str	r3, [r7, #28]
+ 810256c:	69fb      	ldr	r3, [r7, #28]
+ 810256e:	f244 0250 	movw	r2, #16464	; 0x4050
+ 8102572:	4293      	cmp	r3, r2
+ 8102574:	d9ea      	bls.n	810254c <main+0x1d0>
   }
 
   FD_Wenergy(Wavelet_dec,Wavelet_dec_dim,&Ea,Ed);
- 8102578:	4b0d      	ldr	r3, [pc, #52]	; (81025b0 <main+0x234>)
- 810257a:	4a0e      	ldr	r2, [pc, #56]	; (81025b4 <main+0x238>)
- 810257c:	490a      	ldr	r1, [pc, #40]	; (81025a8 <main+0x22c>)
- 810257e:	6938      	ldr	r0, [r7, #16]
- 8102580:	f7ff fd4a 	bl	8102018 <FD_Wenergy>
+ 8102576:	4b0e      	ldr	r3, [pc, #56]	; (81025b0 <main+0x234>)
+ 8102578:	4a0e      	ldr	r2, [pc, #56]	; (81025b4 <main+0x238>)
+ 810257a:	490b      	ldr	r1, [pc, #44]	; (81025a8 <main+0x22c>)
+ 810257c:	6938      	ldr	r0, [r7, #16]
+ 810257e:	f7ff fd4b 	bl	8102018 <FD_Wenergy>
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
- 8102584:	e7fe      	b.n	8102584 <main+0x208>
- 8102586:	bf00      	nop
- 8102588:	58024400 	.word	0x58024400
- 810258c:	e000ed00 	.word	0xe000ed00
- 8102590:	58026400 	.word	0x58026400
- 8102594:	10000060 	.word	0x10000060
- 8102598:	10000254 	.word	0x10000254
- 810259c:	0810e1c0 	.word	0x0810e1c0
- 81025a0:	0810e1cc 	.word	0x0810e1cc
- 81025a4:	0810e1d0 	.word	0x0810e1d0
+ 8102582:	e7fe      	b.n	8102582 <main+0x206>
+ 8102584:	58024400 	.word	0x58024400
+ 8102588:	e000ed00 	.word	0xe000ed00
+ 810258c:	58026400 	.word	0x58026400
+ 8102590:	10000060 	.word	0x10000060
+ 8102594:	10000254 	.word	0x10000254
+ 8102598:	0810e1c0 	.word	0x0810e1c0
+ 810259c:	0810e1cc 	.word	0x0810e1cc
+ 81025a0:	0810e1d0 	.word	0x0810e1d0
+ 81025a4:	00010144 	.word	0x00010144
  81025a8:	1000028c 	.word	0x1000028c
  81025ac:	0810e1d8 	.word	0x0810e1d8
  81025b0:	10000264 	.word	0x10000264
