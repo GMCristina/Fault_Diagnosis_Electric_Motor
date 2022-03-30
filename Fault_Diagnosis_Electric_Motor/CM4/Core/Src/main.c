@@ -229,12 +229,12 @@ int main(void)
 	 printf("%f\r\n",ia[i].data_float);
   }
 
- // FD_Hilbert(&ia[0].data_float);
+
   FD_Hilbert_fast(&ia[0].data_float);
 
   float * Wavelet_dec = (float *)malloc(N_DEC_WAVELET * sizeof(union DATA));
 
-  //FD_Wavedec_zpd(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
+
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
 
   printf("Dec\r\n");

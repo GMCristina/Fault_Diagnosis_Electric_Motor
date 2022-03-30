@@ -237,8 +237,8 @@ void FD_Hilbert_fast(float*y){
 
 	y = (float*)realloc(y,2*N_SAMPLE*sizeof(float));
 
-    uint32_t j = N_SAMPLE -1;
-    for(uint32_t i = 2*N_SAMPLE-1;i>=0;i--){
+    int32_t j = N_SAMPLE -1;
+    for(int32_t i = 2*N_SAMPLE-1;i>=0;i--){
        y[i] = 0;
        i--;
        y[i]=y[j];

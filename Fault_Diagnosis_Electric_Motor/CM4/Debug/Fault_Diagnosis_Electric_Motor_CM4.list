@@ -4001,7 +4001,7 @@ int main(void)
  81024f4:	d3eb      	bcc.n	81024ce <main+0x17e>
   }
 
- // FD_Hilbert(&ia[0].data_float);
+
   FD_Hilbert_fast(&ia[0].data_float);
  81024f6:	69bb      	ldr	r3, [r7, #24]
  81024f8:	4618      	mov	r0, r3
@@ -4013,7 +4013,7 @@ int main(void)
  8102506:	4603      	mov	r3, r0
  8102508:	613b      	str	r3, [r7, #16]
 
-  //FD_Wavedec_zpd(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
+
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
  810250a:	69bb      	ldr	r3, [r7, #24]
  810250c:	461a      	mov	r2, r3
