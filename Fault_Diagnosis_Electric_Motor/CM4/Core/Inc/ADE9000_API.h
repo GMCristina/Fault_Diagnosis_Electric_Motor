@@ -11,6 +11,7 @@
 #include "ADE9000RegMap.h"
 #include "main.h"
 #include <stdio.h>
+#include <math.h>
 
 #define ACQUISITION_PERIOD 0.256//1.024 //seconds
 #define ACQUISITION_FREQ 32000//8000 //HZ
@@ -46,7 +47,7 @@
 #define WF_IN_EN 0b0
 
 //00(sinc4),10(sinc4+lpf),11(pcf)
-#define WF_SRC 0b00//10
+#define WF_SRC 0b10//00
 
 //00(stop full), 01(stop trigger)
 //10(stop trigger center),11(save add trigger)

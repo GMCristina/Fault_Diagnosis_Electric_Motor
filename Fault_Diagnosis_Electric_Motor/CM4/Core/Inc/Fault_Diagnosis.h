@@ -22,7 +22,22 @@ extern float LoD [DIM_FILTER_WAVELET];
 extern float HiD [DIM_FILTER_WAVELET];
 
 #define N_LEVEL_WAVELET 10
-#define N_DEC_WAVELET 8273//8273//8273//32083 //dim c da Matlab
+//#define N_DEC_WAVELET 32849//8273//8273//32083 //dim c da Matlab
+
+#define L1 (int32_t)((N_SAMPLE + N_LEVEL_WAVELET - 1)/2)
+#define L2 (int32_t)((L1 + N_LEVEL_WAVELET - 1)/2)
+#define L3 (int32_t)((L2 + N_LEVEL_WAVELET - 1)/2)
+#define L4 (int32_t)((L3 + N_LEVEL_WAVELET - 1)/2)
+#define L5 (int32_t)((L4 + N_LEVEL_WAVELET - 1)/2)
+#define L6 (int32_t)((L5 + N_LEVEL_WAVELET - 1)/2)
+#define L7 (int32_t)((L6 + N_LEVEL_WAVELET - 1)/2)
+#define L8 (int32_t)((L7 + N_LEVEL_WAVELET - 1)/2)
+#define L9 (int32_t)((L8 + N_LEVEL_WAVELET - 1)/2)
+#define L10 (int32_t)((L9 + N_LEVEL_WAVELET - 1)/2)
+
+#define N_DEC_WAVELET L1+L2+L3+L4+L5+L6+L7+L8+L9+L10+L10
+
+
 
 //extern float Wavelet_dec[N_DEC_WAVELET];
 extern uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
