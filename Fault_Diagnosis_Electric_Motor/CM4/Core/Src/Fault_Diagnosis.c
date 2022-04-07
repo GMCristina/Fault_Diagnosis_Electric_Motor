@@ -9,8 +9,7 @@
 #include<Fault_Diagnosis.h>
 #include<math.h>
 
-#define ARM_MATH_CM4
-#include <arm_math.h>
+
 
 //Filter for wavelet db5
 float LoD [DIM_FILTER_WAVELET] = {0.0033,-0.0126,-0.0062,0.0776,-0.0322,-0.2423,0.1384,0.7243,0.6038,0.1601};

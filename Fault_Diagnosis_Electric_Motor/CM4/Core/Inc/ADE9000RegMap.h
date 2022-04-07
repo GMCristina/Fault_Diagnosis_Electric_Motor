@@ -1,19 +1,7 @@
-/* ================================================================================
-
-     Project      :   ade90xx
-     File         :   ade90xx.h
-     Description  :   API macros header definition register file.
-
-     Date         :   May 3, 2016
-
-     Copyright (c) 2016 Analog Devices, Inc.  All Rights Reserved.
-     This software is proprietary and confidential to Analog Devices, Inc. and
-     its licensors.
-
-     This file was auto-generated. Do not make local changes to this file.
-
-   ================================================================================ */
-
+/*
+ * ADE9000_RegMap.h
+ * ADE9000 registers address
+ */
 
 #define ADDR_AIGAIN                          0x00000000            /*  Phase A current gain adjust. */
 #define ADDR_AIGAIN0                         0x00000001            /*  If multipoint gain and phase compensation is enabled, with MTEN = 1 in the CONFIG0 register, an additional gain factor, AIGAIN0 through AIGAIN5, is applied based on the AIRMS current rms amplitude and the MTTHR_Lx and MTTHR_Hx register values */

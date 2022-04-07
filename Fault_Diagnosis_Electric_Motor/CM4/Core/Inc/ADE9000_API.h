@@ -10,22 +10,29 @@
 
 #include "ADE9000RegMap.h"
 #include "main.h"
+
 #include <stdio.h>
 #include <math.h>
 
+//Acquisition parameters
+//NB: Acquire buffer and acquisition period for N_SAMPLE=2^n
+#define WAVEFORM_BUFFER_DIM 256
 #define ACQUISITION_PERIOD 0.256//1.024 //seconds
 #define ACQUISITION_FREQ 32000//8000 //HZ
 //16 pagine, 16 campioni per pagina
 //32KHz 8ms tot, 0.5ms per pagina
 //8KHz 32ms tot, 2ms per pagina
-#define N_BUFFER (int32_t)((ACQUISITION_PERIOD*ACQUISITION_FREQ)/WAVEFORM_BUFFER_DIM) //+ ((ACQUISITION_PERIOD*ACQUISITION_FREQ)%WAVEFORM_BUFFER_DIM!=0))
+#define N_BUFFER (int32_t)((ACQUISITION_PERIOD*ACQUISITION_FREQ)/WAVEFORM_BUFFER_DIM)
 #define N_SAMPLE (WAVEFORM_BUFFER_DIM*N_BUFFER) //n_buffer x dim_buffer(256)
 #define BURST_READ_N (WAVEFORM_BUFFER_DIM/2) // metà buffer (16samp*8pagine)
 
+//Convertion counts-A parameters
 #define FULL_SCALE_CODE_SINC4 67076544
 #define FULL_SCALE_CODE_LPF 74481024
 #define V_REF 1
+
 #define FDT_V (1000.0/(4*200000+1000)) // 1/801
+
 #define N_CT 1500
 #define R_I (5.1 *2)
 #define FDT_I (R_I/N_CT)
@@ -35,11 +42,11 @@
 #define GAIN_V 1.0
 #define GAIN_I 1.0
 
-
+//SPI parameters
 #define TIMEOUT_SPI 100
-//SPI with 16 bit data frame
-#define SIZE_16 1
-#define WAVEFORM_BUFFER_DIM 256
+#define SIZE_16 1 //SPI with 16 bit data frame
+
+//Waveform buffer parameters
 #define WAVEFORM_BUFFER_START_ADDR 0x800
 
 //Waveform buffer config
@@ -64,6 +71,7 @@
 // 1110(in), 1111(single add)
 #define BURST_CHAN 0b1000
 
+//Unions
 union ADE_DATA_32{
 	uint8_t data_8[4];
 	uint16_t data_16[2];
@@ -81,37 +89,30 @@ union DATA{
 	float data_float;
 };
 
+//External variables
 extern SPI_HandleTypeDef hspi1;
 extern int8_t flag_read;
-extern int32_t n_int;
 
-//extern union DATA ia[N_SAMPLE];
-//va[N_SAMPLE],
-
+//Functions declaration
 uint16_t ADE9000_SPI_Read_16(uint16_t Address);
 uint32_t ADE9000_SPI_Read_32(uint16_t Address);
-
-
 void ADE9000_SPI_Write_16(uint16_t Address, uint16_t Data);
 void ADE9000_SPI_Write_32(uint16_t Address, uint32_t Data);
 
 void ADE9000_Setup(void);
 void ADE9000_Power(void);
 
+void test_read_write_reg(void);
+
 void Start_Waveform_Buffer(void);
 void Stop_Waveform_Buffer(void);
-
-void test_read_write_reg(void);
 
 void ADE9000_SPI_Burst_Read_one_ch(uint16_t Address, uint16_t n, int32_t* data);
 void ADE9000_SPI_Burst_Read_two_ch(uint16_t Address, uint16_t n, int32_t* i, int32_t* v);
 void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32_t* ib, int32_t* ic, int32_t* in, int32_t* va, int32_t* vb, int32_t* vc);
 
 void ADE9000_Conv_32_24(int32_t* data, uint32_t n);
-
 void ADE9000_Conv_ADC_I(union DATA* data_i, uint32_t n);
 void ADE9000_Conv_ADC_V(union DATA* data_v, uint32_t n);
-
-
 
 #endif /* INC_ADE9000_API_H_ */
