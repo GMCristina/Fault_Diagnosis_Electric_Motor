@@ -23,23 +23,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 00000030  00000000  00000000  00020238  2**0
                   CONTENTS, READONLY
- 10 .debug_info   00022edf  00000000  00000000  00020268  2**0
+ 10 .debug_info   00022568  00000000  00000000  00020268  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 000037d8  00000000  00000000  00043147  2**0
+ 11 .debug_abbrev 000037d8  00000000  00000000  000427d0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 12 .debug_aranges 00000ea8  00000000  00000000  00046920  2**3
+ 12 .debug_aranges 00000ea8  00000000  00000000  00045fa8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_ranges 00000da0  00000000  00000000  000477c8  2**3
+ 13 .debug_ranges 00000da0  00000000  00000000  00046e50  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  0003cd2a  00000000  00000000  00048568  2**0
+ 14 .debug_macro  0003cb9d  00000000  00000000  00047bf0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   00014a3b  00000000  00000000  00085292  2**0
+ 15 .debug_line   000149fd  00000000  00000000  0008478d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    00186b1b  00000000  00000000  00099ccd  2**0
+ 16 .debug_str    00185f19  00000000  00000000  0009918a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      00000053  00000000  00000000  002207e8  2**0
+ 17 .comment      00000053  00000000  00000000  0021f0a3  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  00005618  00000000  00000000  0022083c  2**2
+ 18 .debug_frame  00005618  00000000  00000000  0021f0f8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1627,11 +1627,8 @@ void ADE9000_Setup(){
  8101426:	4619      	mov	r1, r3
  8101428:	f240 4092 	movw	r0, #1170	; 0x492
  810142c:	f000 f8ee 	bl	810160c <ADE9000_SPI_Write_16>
-	//value_reg_16 = 0x1020;//IN, sinc4, stop full, fixed rate, stop, tutti canali(0000)
-	//value_reg_16 = 0x0029; //no IN, sinc4, stop full, fixed rate, stop, solo VA (1001)
-	//value_reg_16 = 0x0021; //no IN, sinc4, stop full, fixed rate, stop, solo Ia e VA (0001)
-	//value_reg_16 = 0x0221; //no IN, LPF, stop full, fixed rate, stop, solo Ia e VA (0001)
 
+	//WFB_CFG
 	value_reg_16 = 0x0000;
  8101430:	2300      	movs	r3, #0
  8101432:	80fb      	strh	r3, [r7, #6]
@@ -1658,15 +1655,13 @@ void ADE9000_Setup(){
  8101456:	4619      	mov	r1, r3
  8101458:	f44f 6094 	mov.w	r0, #1184	; 0x4a0
  810145c:	f000 f8d6 	bl	810160c <ADE9000_SPI_Write_16>
+
+	//WFB_PG_IRQEN
 	// 1 bit per pagina: pag15-pag0
 	//fa PageFULL in STATUS0
-
-	//value_reg_16 = 0x8000; //page 15
-	//value_reg_16 = 0xFFFF; //all page
 	value_reg_16 = 0x8080; //page 15, page 7 (metà)
  8101460:	f248 0380 	movw	r3, #32896	; 0x8080
  8101464:	80fb      	strh	r3, [r7, #6]
-	//value_reg_16 = 0x0000; //no int
 	ADE9000_SPI_Write_16(ADDR_WFB_PG_IRQEN,value_reg_16);
  8101466:	88fb      	ldrh	r3, [r7, #6]
  8101468:	4619      	mov	r1, r3
@@ -1727,6 +1722,7 @@ void ADE9000_Setup(){
  81014ca:	f44f 6090 	mov.w	r0, #1152	; 0x480
  81014ce:	f000 f89d 	bl	810160c <ADE9000_SPI_Write_16>
 
+	//Interrupt problem (solution???)
 	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
  81014d2:	f240 4002 	movw	r0, #1026	; 0x402
  81014d6:	f000 f85d 	bl	8101594 <ADE9000_SPI_Read_32>
@@ -1735,7 +1731,6 @@ void ADE9000_Setup(){
  81014dc:	6839      	ldr	r1, [r7, #0]
  81014de:	f240 4002 	movw	r0, #1026	; 0x402
  81014e2:	f000 f8c7 	bl	8101674 <ADE9000_SPI_Write_32>
-	//printf("status0 reg: %d\r\n",value_reg_32);
 }
  81014e6:	bf00      	nop
  81014e8:	3708      	adds	r7, #8
@@ -3831,9 +3826,11 @@ int main(void)
  81023d8:	f000 f8ee 	bl	81025b8 <MX_SPI1_Init>
   /* USER CODE BEGIN 2 */
 
+  //Power sequence ADE9000
   ADE9000_Power();
  81023dc:	f7ff f888 	bl	81014f0 <ADE9000_Power>
 
+  //Needed for scanf
   setvbuf( stdin, NULL, _IONBF, 0 );
  81023e0:	4b6a      	ldr	r3, [pc, #424]	; (810258c <main+0x228>)
  81023e2:	681b      	ldr	r3, [r3, #0]
@@ -3843,6 +3840,7 @@ int main(void)
  81023ea:	2100      	movs	r1, #0
  81023ec:	f006 f8d4 	bl	8108598 <setvbuf>
 
+  //ADE9000 configuration
   ADE9000_Setup();
  81023f0:	f7fe fffa 	bl	81013e8 <ADE9000_Setup>
 
@@ -3855,48 +3853,53 @@ int main(void)
  81023fc:	617b      	str	r3, [r7, #20]
   uint16_t value_reg_16;
 
+  //Start acquisition on Waveform buffer
   Start_Waveform_Buffer();
  81023fe:	f7ff f975 	bl	81016ec <Start_Waveform_Buffer>
 
+  //Acquire N_SAMPLE
   while(index < N_SAMPLE){
  8102402:	e057      	b.n	81024b4 <main+0x150>
- 		  while(flag_read == 0){}
+
+	  //Wait for first interrupt (first half buffer)
+	  while(flag_read == 0){}
  8102404:	bf00      	nop
  8102406:	4b62      	ldr	r3, [pc, #392]	; (8102590 <main+0x22c>)
  8102408:	f993 3000 	ldrsb.w	r3, [r3]
  810240c:	2b00      	cmp	r3, #0
  810240e:	d0fa      	beq.n	8102406 <main+0xa2>
 
- 		  flag_read = 0;
+	  //Clear interrupt
+	  flag_read = 0;
  8102410:	4b5f      	ldr	r3, [pc, #380]	; (8102590 <main+0x22c>)
  8102412:	2200      	movs	r2, #0
  8102414:	701a      	strb	r2, [r3, #0]
- 		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+	  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
  8102416:	6979      	ldr	r1, [r7, #20]
  8102418:	f240 4002 	movw	r0, #1026	; 0x402
  810241c:	f7ff f92a 	bl	8101674 <ADE9000_SPI_Write_32>
 
-		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+	  //Check last page
+	  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
  8102420:	f240 40a3 	movw	r0, #1187	; 0x4a3
  8102424:	f7ff f884 	bl	8101530 <ADE9000_SPI_Read_16>
  8102428:	4603      	mov	r3, r0
  810242a:	81fb      	strh	r3, [r7, #14]
-		  value_reg_16 = (value_reg_16>>12)&0x0F;
+	  value_reg_16 = (value_reg_16>>12)&0x0F;
  810242c:	89fb      	ldrh	r3, [r7, #14]
  810242e:	0b1b      	lsrs	r3, r3, #12
  8102430:	81fb      	strh	r3, [r7, #14]
-		  printf("pg: %i\r\n",value_reg_16);
+	  printf("pg: %i\r\n",value_reg_16);
  8102432:	89fb      	ldrh	r3, [r7, #14]
  8102434:	4619      	mov	r1, r3
  8102436:	4857      	ldr	r0, [pc, #348]	; (8102594 <main+0x230>)
  8102438:	f006 f810 	bl	810845c <iprintf>
- 		  start = WAVEFORM_BUFFER_START_ADDR;
+
+	  //Read first half buffer
+	  start = WAVEFORM_BUFFER_START_ADDR;
  810243c:	f44f 6300 	mov.w	r3, #2048	; 0x800
  8102440:	60bb      	str	r3, [r7, #8]
-
-
-
- 		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
+	  ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
  8102442:	68bb      	ldr	r3, [r7, #8]
  8102444:	b298      	uxth	r0, r3
  8102446:	8cfb      	ldrh	r3, [r7, #38]	; 0x26
@@ -3906,48 +3909,50 @@ int main(void)
  810244e:	461a      	mov	r2, r3
  8102450:	2180      	movs	r1, #128	; 0x80
  8102452:	f7ff f979 	bl	8101748 <ADE9000_SPI_Burst_Read_one_ch>
-
- 		  index += BURST_READ_N;
+	  index += BURST_READ_N;
  8102456:	8cfb      	ldrh	r3, [r7, #38]	; 0x26
  8102458:	3380      	adds	r3, #128	; 0x80
  810245a:	84fb      	strh	r3, [r7, #38]	; 0x26
 
- 		  while(flag_read == 0){}
+	  //Wait for second interrupt (second half buffer)
+	  while(flag_read == 0){}
  810245c:	bf00      	nop
  810245e:	4b4c      	ldr	r3, [pc, #304]	; (8102590 <main+0x22c>)
  8102460:	f993 3000 	ldrsb.w	r3, [r3]
  8102464:	2b00      	cmp	r3, #0
  8102466:	d0fa      	beq.n	810245e <main+0xfa>
 
-
- 		  flag_read = 0;
+	  //Clear interrupt
+	  flag_read = 0;
  8102468:	4b49      	ldr	r3, [pc, #292]	; (8102590 <main+0x22c>)
  810246a:	2200      	movs	r2, #0
  810246c:	701a      	strb	r2, [r3, #0]
- 		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+	  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
  810246e:	6979      	ldr	r1, [r7, #20]
  8102470:	f240 4002 	movw	r0, #1026	; 0x402
  8102474:	f7ff f8fe 	bl	8101674 <ADE9000_SPI_Write_32>
- 		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+
+	  //Check last page
+	  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
  8102478:	f240 40a3 	movw	r0, #1187	; 0x4a3
  810247c:	f7ff f858 	bl	8101530 <ADE9000_SPI_Read_16>
  8102480:	4603      	mov	r3, r0
  8102482:	81fb      	strh	r3, [r7, #14]
- 		  value_reg_16 = (value_reg_16>>12)&0x0F;
+	  value_reg_16 = (value_reg_16>>12)&0x0F;
  8102484:	89fb      	ldrh	r3, [r7, #14]
  8102486:	0b1b      	lsrs	r3, r3, #12
  8102488:	81fb      	strh	r3, [r7, #14]
- 		  printf("pg: %i\r\n",value_reg_16);
+	  printf("pg: %i\r\n",value_reg_16);
  810248a:	89fb      	ldrh	r3, [r7, #14]
  810248c:	4619      	mov	r1, r3
  810248e:	4841      	ldr	r0, [pc, #260]	; (8102594 <main+0x230>)
  8102490:	f005 ffe4 	bl	810845c <iprintf>
- 		  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
+
+	  //Read second half buffer
+	  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
  8102494:	f44f 6340 	mov.w	r3, #3072	; 0xc00
  8102498:	60bb      	str	r3, [r7, #8]
-
-
- 		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
+	  ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
  810249a:	68bb      	ldr	r3, [r7, #8]
  810249c:	b298      	uxth	r0, r3
  810249e:	8cfb      	ldrh	r3, [r7, #38]	; 0x26
@@ -3957,8 +3962,7 @@ int main(void)
  81024a6:	461a      	mov	r2, r3
  81024a8:	2180      	movs	r1, #128	; 0x80
  81024aa:	f7ff f94d 	bl	8101748 <ADE9000_SPI_Burst_Read_one_ch>
-
- 		 index += BURST_READ_N;
+	  index += BURST_READ_N;
  81024ae:	8cfb      	ldrh	r3, [r7, #38]	; 0x26
  81024b0:	3380      	adds	r3, #128	; 0x80
  81024b2:	84fb      	strh	r3, [r7, #38]	; 0x26
@@ -3966,18 +3970,19 @@ int main(void)
  81024b4:	8cfb      	ldrh	r3, [r7, #38]	; 0x26
  81024b6:	f5b3 5f00 	cmp.w	r3, #8192	; 0x2000
  81024ba:	d3a3      	bcc.n	8102404 <main+0xa0>
+  }
 
-
- }
+  //Stop acquisition on Waveform buffer
   Stop_Waveform_Buffer();
  81024bc:	f7ff f92d 	bl	810171a <Stop_Waveform_Buffer>
 
-
+  //Convertion counts-A
   ADE9000_Conv_ADC_I(ia,N_SAMPLE);
  81024c0:	f44f 5100 	mov.w	r1, #8192	; 0x2000
  81024c4:	4834      	ldr	r0, [pc, #208]	; (8102598 <main+0x234>)
  81024c6:	f7ff f98f 	bl	81017e8 <ADE9000_Conv_ADC_I>
 
+  //Print IA [A]
   printf("IA\r\n");
  81024ca:	4834      	ldr	r0, [pc, #208]	; (810259c <main+0x238>)
  81024cc:	f006 f84c 	bl	8108568 <puts>
@@ -4006,12 +4011,13 @@ int main(void)
  81024fc:	d3eb      	bcc.n	81024d6 <main+0x172>
   }
 
-
+  //Envelope with Hilbert
   FD_Hilbert_fast(&ia[0].data_float);
  81024fe:	4826      	ldr	r0, [pc, #152]	; (8102598 <main+0x234>)
  8102500:	f7ff fe64 	bl	81021cc <FD_Hilbert_fast>
 
 
+  //Handle memory for Wavelet
   for(uint32_t k =0;k<N_DEC_WAVELET;k++){
  8102504:	2300      	movs	r3, #0
  8102506:	61fb      	str	r3, [r7, #28]
@@ -4037,12 +4043,14 @@ int main(void)
  810252c:	4b1d      	ldr	r3, [pc, #116]	; (81025a4 <main+0x240>)
  810252e:	613b      	str	r3, [r7, #16]
 
+  //Wavelet decomposition
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
  8102530:	4a19      	ldr	r2, [pc, #100]	; (8102598 <main+0x234>)
  8102532:	491d      	ldr	r1, [pc, #116]	; (81025a8 <main+0x244>)
  8102534:	6938      	ldr	r0, [r7, #16]
  8102536:	f7ff fba9 	bl	8101c8c <FD_Wavedec_sym>
 
+  //Print Wavelet decomposition
   printf("Dec\r\n");
  810253a:	481c      	ldr	r0, [pc, #112]	; (81025ac <main+0x248>)
  810253c:	f006 f814 	bl	8108568 <puts>
@@ -4072,6 +4080,7 @@ int main(void)
  810256e:	d9ea      	bls.n	8102546 <main+0x1e2>
   }
 
+  //Energy calculation
   FD_Wenergy(Wavelet_dec,Wavelet_dec_dim,&Ea,Ed);
  8102570:	4b0f      	ldr	r3, [pc, #60]	; (81025b0 <main+0x24c>)
  8102572:	4a10      	ldr	r2, [pc, #64]	; (81025b4 <main+0x250>)

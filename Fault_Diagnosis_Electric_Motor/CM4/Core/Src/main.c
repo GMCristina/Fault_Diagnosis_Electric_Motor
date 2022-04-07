@@ -23,18 +23,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ADE9000_API.h"
-#include <stdio.h>
-//#include <ADE9000CalibrationInputs.h>
-//#include <ADE9000_Calibration.h>
 #include <Fault_Diagnosis.h>
 #include <FFT.h>
 
 #include <stdlib.h>
+#include <stdio.h>
 
-#define ARM_MATH_CM4
-#include <arm_math.h>
-#include <arm_const_structs.h>
-#include<arm_common_tables.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -148,10 +142,13 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
+  //Power sequence ADE9000
   ADE9000_Power();
 
+  //Needed for scanf
   setvbuf( stdin, NULL, _IONBF, 0 );
 
+  //ADE9000 configuration
   ADE9000_Setup();
 
   uint16_t index = 0;
@@ -159,68 +156,79 @@ int main(void)
   uint32_t value_reg_32 = 0x00020000;
   uint16_t value_reg_16;
 
+  //Start acquisition on Waveform buffer
   Start_Waveform_Buffer();
 
+  //Acquire N_SAMPLE
   while(index < N_SAMPLE){
- 		  while(flag_read == 0){}
 
- 		  flag_read = 0;
- 		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
+	  //Wait for first interrupt (first half buffer)
+	  while(flag_read == 0){}
 
-		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
-		  value_reg_16 = (value_reg_16>>12)&0x0F;
-		  printf("pg: %i\r\n",value_reg_16);
- 		  start = WAVEFORM_BUFFER_START_ADDR;
+	  //Clear interrupt
+	  flag_read = 0;
+	  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
 
+	  //Check last page
+	  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+	  value_reg_16 = (value_reg_16>>12)&0x0F;
+	  printf("pg: %i\r\n",value_reg_16);
 
+	  //Read first half buffer
+	  start = WAVEFORM_BUFFER_START_ADDR;
+	  ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
+	  index += BURST_READ_N;
 
- 		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
+	  //Wait for second interrupt (second half buffer)
+	  while(flag_read == 0){}
 
- 		  index += BURST_READ_N;
+	  //Clear interrupt
+	  flag_read = 0;
+	  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
 
- 		  while(flag_read == 0){}
+	  //Check last page
+	  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
+	  value_reg_16 = (value_reg_16>>12)&0x0F;
+	  printf("pg: %i\r\n",value_reg_16);
 
+	  //Read second half buffer
+	  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
+	  ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
+	  index += BURST_READ_N;
+  }
 
- 		  flag_read = 0;
- 		  ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
- 		  value_reg_16 = ADE9000_SPI_Read_16(ADDR_WFB_TRG_STAT);
- 		  value_reg_16 = (value_reg_16>>12)&0x0F;
- 		  printf("pg: %i\r\n",value_reg_16);
- 		  start = WAVEFORM_BUFFER_START_ADDR + BURST_READ_N*8;
-
-
- 		 ADE9000_SPI_Burst_Read_one_ch(start,BURST_READ_N,&ia[index].data_int);
-
- 		 index += BURST_READ_N;
-
-
- }
+  //Stop acquisition on Waveform buffer
   Stop_Waveform_Buffer();
 
-
+  //Convertion counts-A
   ADE9000_Conv_ADC_I(ia,N_SAMPLE);
 
+  //Print IA [A]
   printf("IA\r\n");
   for(uint32_t i = 0; i<N_SAMPLE; i++){
 	 printf("%f\r\n",ia[i].data_float);
   }
 
-
+  //Envelope with Hilbert
   FD_Hilbert_fast(&ia[0].data_float);
 
 
+  //Handle memory for Wavelet
   for(uint32_t k =0;k<N_DEC_WAVELET;k++){
 	  ia[N_SAMPLE + k].data_float=0;
   	}
   float * Wavelet_dec = &ia[N_SAMPLE].data_float;
 
+  //Wavelet decomposition
   FD_Wavedec_sym(Wavelet_dec,Wavelet_dec_dim,&ia[0].data_float);
 
+  //Print Wavelet decomposition
   printf("Dec\r\n");
   for(uint32_t i = 0; i<N_DEC_WAVELET; i++){
 	  printf("%f\r\n",Wavelet_dec[i]);
   }
 
+  //Energy calculation
   FD_Wenergy(Wavelet_dec,Wavelet_dec_dim,&Ea,Ed);
 
   /* USER CODE END 2 */

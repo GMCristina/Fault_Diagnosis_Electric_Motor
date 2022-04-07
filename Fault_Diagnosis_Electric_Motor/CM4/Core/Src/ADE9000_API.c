@@ -36,12 +36,6 @@ void ADE9000_Setup(){
 	ADE9000_SPI_Write_16(ADDR_ACCMODE,value_reg_16);
 
 	//WFB_CFG
-	//value_reg_16 = 0x0028; //no IN, sinc4, stop full, fixed rate, stop, solo IA (1000)
-	//value_reg_16 = 0x1020;//IN, sinc4, stop full, fixed rate, stop, tutti canali(0000)
-	//value_reg_16 = 0x0029; //no IN, sinc4, stop full, fixed rate, stop, solo VA (1001)
-	//value_reg_16 = 0x0021; //no IN, sinc4, stop full, fixed rate, stop, solo Ia e VA (0001)
-	//value_reg_16 = 0x0221; //no IN, LPF, stop full, fixed rate, stop, solo Ia e VA (0001)
-
 	value_reg_16 = 0x0000;
 	value_reg_16 = value_reg_16 | (WF_IN_EN<<12);
 	value_reg_16 = value_reg_16 | (WF_SRC<<8);
@@ -54,11 +48,7 @@ void ADE9000_Setup(){
 	//WFB_PG_IRQEN
 	// 1 bit per pagina: pag15-pag0
 	//fa PageFULL in STATUS0
-
-	//value_reg_16 = 0x8000; //page 15
-	//value_reg_16 = 0xFFFF; //all page
 	value_reg_16 = 0x8080; //page 15, page 7 (metà)
-	//value_reg_16 = 0x0000; //no int
 	ADE9000_SPI_Write_16(ADDR_WFB_PG_IRQEN,value_reg_16);
 
 	//ADDR_MASK0
@@ -84,9 +74,9 @@ void ADE9000_Setup(){
 	value_reg_16 = 0x0001;
 	ADE9000_SPI_Write_16(ADDR_RUN, value_reg_16);
 
+	//Interrupt problem (solution???)
 	value_reg_32 = ADE9000_SPI_Read_32(ADDR_STATUS0);
 	ADE9000_SPI_Write_32(ADDR_STATUS0,value_reg_32);
-	//printf("status0 reg: %d\r\n",value_reg_32);
 }
 
 //power-on sequence
