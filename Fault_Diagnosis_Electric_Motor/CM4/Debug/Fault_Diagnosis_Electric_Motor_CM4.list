@@ -23,23 +23,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
   9 .ARM.attributes 00000030  00000000  00000000  00020238  2**0
                   CONTENTS, READONLY
- 10 .debug_info   00022538  00000000  00000000  00020268  2**0
+ 10 .debug_info   00022537  00000000  00000000  00020268  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 000037d8  00000000  00000000  000427a0  2**0
+ 11 .debug_abbrev 000037c7  00000000  00000000  0004279f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 12 .debug_aranges 00000ea8  00000000  00000000  00045f78  2**3
+ 12 .debug_aranges 00000ea8  00000000  00000000  00045f68  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_ranges 00000da0  00000000  00000000  00046e20  2**3
+ 13 .debug_ranges 00000da0  00000000  00000000  00046e10  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  0003ca58  00000000  00000000  00047bc0  2**0
+ 14 .debug_macro  0003ca58  00000000  00000000  00047bb0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   000149bd  00000000  00000000  00084618  2**0
+ 15 .debug_line   000149bd  00000000  00000000  00084608  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    00185994  00000000  00000000  00098fd5  2**0
+ 16 .debug_str    00185994  00000000  00000000  00098fc5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      00000053  00000000  00000000  0021e969  2**0
+ 17 .comment      00000053  00000000  00000000  0021e959  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  00005618  00000000  00000000  0021e9bc  2**2
+ 18 .debug_frame  00005618  00000000  00000000  0021e9ac  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1575,10 +1575,10 @@ void SystemInit (void)
  81013e4:	e000ed00 	.word	0xe000ed00
 
 081013e8 <ADE9000_Setup>:
+#include "ADE9000_API.h"
+#include "main.h"
 
-
-//union DATA  ia[N_SAMPLE];
-//va[N_SAMPLE],
+int8_t flag_read = 0;
 
 void ADE9000_Setup(){
  81013e8:	b580      	push	{r7, lr}
@@ -2311,8 +2311,8 @@ void ADE9000_Conv_ADC_I(union DATA *data_i, uint32_t n) {
  8101888:	4c7fe070 	.word	0x4c7fe070
 
 0810188c <log2_c>:
-//float complex vec[N_SAMPLE];
-//float complex app[N_SAMPLE];
+ */
+#include<FFT.h>
 
 
 int log2_c(int N)

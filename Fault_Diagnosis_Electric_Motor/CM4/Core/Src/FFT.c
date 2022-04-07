@@ -6,9 +6,6 @@
  */
 #include<FFT.h>
 
-//float complex vec[N_SAMPLE];
-//float complex app[N_SAMPLE];
-
 
 int log2_c(int N)
 {

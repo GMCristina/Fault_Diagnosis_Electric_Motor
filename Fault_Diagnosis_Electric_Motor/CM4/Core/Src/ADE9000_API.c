@@ -10,10 +10,6 @@
 
 int8_t flag_read = 0;
 
-
-//union DATA  ia[N_SAMPLE];
-//va[N_SAMPLE],
-
 void ADE9000_Setup(){
 	uint32_t value_reg_32;
 	uint16_t value_reg_16;

@@ -13,16 +13,13 @@
 #include<ADE9000_API.h>
 #include<FFT.h>
 
-
-
+//Wavelet parameters
 //wavelet db5 -> 10 element filter
 #define DIM_FILTER_WAVELET 10
-
 extern float LoD [DIM_FILTER_WAVELET];
 extern float HiD [DIM_FILTER_WAVELET];
 
 #define N_LEVEL_WAVELET 10
-//#define N_DEC_WAVELET 32849//8273//8273//32083 //dim c da Matlab
 
 #define L1 (int32_t)((N_SAMPLE + N_LEVEL_WAVELET - 1)/2)
 #define L2 (int32_t)((L1 + N_LEVEL_WAVELET - 1)/2)
@@ -37,29 +34,21 @@ extern float HiD [DIM_FILTER_WAVELET];
 
 #define N_DEC_WAVELET L1+L2+L3+L4+L5+L6+L7+L8+L9+L10+L10
 
-
-
-//extern float Wavelet_dec[N_DEC_WAVELET];
+//External variables
 extern uint16_t Wavelet_dec_dim[N_LEVEL_WAVELET];
 
-//extern float FFT_r[N_SAMPLE/2 +1];
-//extern float FFT_i[N_SAMPLE/2 +1];
-//extern float y_1[N_SAMPLE];
 extern union DATA ia[N_SAMPLE+N_DEC_WAVELET];
 
 extern float Ea;
 extern float Ed [N_LEVEL_WAVELET];
 
+//Functions declaration
 void FD_Wavedec_zpd(float* dec, uint16_t* dec_dim,float* y);
 void FD_Wavedec_sym(float* dec, uint16_t* dec_dim,float* y);
+
 void FD_Wenergy(float* dec, uint16_t* dec_dim, float* Ea, float* Ed);
 
 void FD_Hilbert(float*y);
-
 void FD_Hilbert_fast(float*y);
-
-
-
-
 
 #endif /* INC_FAULT_DIAGNOSIS_H_ */

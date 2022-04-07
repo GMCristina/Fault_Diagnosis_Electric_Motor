@@ -10,22 +10,19 @@
 
 #include <complex.h>
 #include<math.h>
+#include <stdlib.h>
 
 #include<Fault_Diagnosis.h>
 #include<ADE9000_API.h>
 
-#include <stdlib.h>
-
-//extern float complex vec[N_SAMPLE]; //float complex (8byte=4*2)
-
+//Functions declaration
 int log2_c(int N);
 int reverse(int N, int n);
 void order(float complex* f1, int N);
 void orderInplace(float complex* f, int N);
+
 void FFT(float complex* f, int N);
 void IFFT(float complex* f, int N);
-
-
 
 
 #endif /* INC_FFT_H_ */
