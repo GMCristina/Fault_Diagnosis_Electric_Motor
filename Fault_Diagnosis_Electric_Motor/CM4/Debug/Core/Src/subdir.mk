@@ -6,7 +6,6 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Core/Src/ADE9000_API.c \
-../Core/Src/ADE9000_Calibration.c \
 ../Core/Src/FFT.c \
 ../Core/Src/Fault_Diagnosis.c \
 ../Core/Src/main.c \
@@ -17,7 +16,6 @@ C_SRCS += \
 
 OBJS += \
 ./Core/Src/ADE9000_API.o \
-./Core/Src/ADE9000_Calibration.o \
 ./Core/Src/FFT.o \
 ./Core/Src/Fault_Diagnosis.o \
 ./Core/Src/main.o \
@@ -28,7 +26,6 @@ OBJS += \
 
 C_DEPS += \
 ./Core/Src/ADE9000_API.d \
-./Core/Src/ADE9000_Calibration.d \
 ./Core/Src/FFT.d \
 ./Core/Src/Fault_Diagnosis.d \
 ./Core/Src/main.d \
@@ -45,7 +42,7 @@ Core/Src/%.o: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/ADE9000_API.d ./Core/Src/ADE9000_API.o ./Core/Src/ADE9000_Calibration.d ./Core/Src/ADE9000_Calibration.o ./Core/Src/FFT.d ./Core/Src/FFT.o ./Core/Src/Fault_Diagnosis.d ./Core/Src/Fault_Diagnosis.o ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/stm32h7xx_hal_msp.d ./Core/Src/stm32h7xx_hal_msp.o ./Core/Src/stm32h7xx_it.d ./Core/Src/stm32h7xx_it.o ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/sysmem.d ./Core/Src/sysmem.o
+	-$(RM) ./Core/Src/ADE9000_API.d ./Core/Src/ADE9000_API.o ./Core/Src/FFT.d ./Core/Src/FFT.o ./Core/Src/Fault_Diagnosis.d ./Core/Src/Fault_Diagnosis.o ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/stm32h7xx_hal_msp.d ./Core/Src/stm32h7xx_hal_msp.o ./Core/Src/stm32h7xx_it.d ./Core/Src/stm32h7xx_it.o ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/sysmem.d ./Core/Src/sysmem.o
 
 .PHONY: clean-Core-2f-Src
 
