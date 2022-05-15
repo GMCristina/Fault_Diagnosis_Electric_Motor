@@ -17,8 +17,8 @@
 //Acquisition parameters
 //NB: Acquire buffer and acquisition period for N_SAMPLE=2^n
 #define WAVEFORM_BUFFER_DIM 256
-#define ACQUISITION_PERIOD 0.256//1.024 //seconds
-#define ACQUISITION_FREQ 32000//8000 //HZ
+#define ACQUISITION_PERIOD 2.048//1.024 //seconds
+#define ACQUISITION_FREQ 8000//8000 //HZ
 //16 pagine, 16 campioni per pagina
 //32KHz 8ms tot, 0.5ms per pagina
 //8KHz 32ms tot, 2ms per pagina
@@ -33,7 +33,7 @@
 
 #define FDT_V (1000.0/(4*200000+1000)) // 1/801
 
-#define N_CT 1500
+#define N_CT 2500 //1500(rosso VAC4658_X043),2500(nero VAC4626_X002)
 #define R_I (5.1 *2)
 #define FDT_I (R_I/N_CT)
 
@@ -92,6 +92,7 @@ union DATA{
 //External variables
 extern SPI_HandleTypeDef hspi1;
 extern int8_t flag_read;
+extern int8_t flag_trigger;
 
 //Functions declaration
 uint16_t ADE9000_SPI_Read_16(uint16_t Address);
@@ -114,5 +115,7 @@ void ADE9000_SPI_Burst_Read_all(uint16_t Address, uint16_t n, int32_t* ia, int32
 void ADE9000_Conv_32_24(int32_t* data, uint32_t n);
 void ADE9000_Conv_ADC_I(union DATA* data_i, uint32_t n);
 void ADE9000_Conv_ADC_V(union DATA* data_v, uint32_t n);
+void ADE9000_Remove_DC(union DATA* data_v, uint32_t n);
+
 
 #endif /* INC_ADE9000_API_H_ */

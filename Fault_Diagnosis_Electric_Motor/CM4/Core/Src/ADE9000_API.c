@@ -9,6 +9,7 @@
 #include "main.h"
 
 int8_t flag_read = 0;
+int8_t flag_trigger = 0;
 
 void ADE9000_Setup(){
 	uint32_t value_reg_32;
@@ -421,4 +422,15 @@ void ADE9000_Conv_ADC_V(union DATA *data_v, uint32_t n) {
 				data_v[i].data_float = (data_v[i].data_float - OFFSET_V)*GAIN_V;
 	}
 
+}
+
+void ADE9000_Remove_DC(union DATA* data_v, uint32_t n){
+	float mean = 0;
+	for (uint32_t i = 0; i < n; i++){
+		mean += data_v[i].data_float;
+	}
+	mean = mean/n;
+	for (uint32_t i = 0; i < n; i++){
+		data_v[i].data_float = data_v[i].data_float - mean;
+	}
 }

@@ -156,6 +156,10 @@ int main(void)
   uint32_t value_reg_32 = 0x00020000;
   uint16_t value_reg_16;
 
+
+  while(flag_trigger==0){}
+  flag_trigger = 0;
+
   //Start acquisition on Waveform buffer
   Start_Waveform_Buffer();
 
@@ -202,6 +206,8 @@ int main(void)
 
   //Convertion counts-A
   ADE9000_Conv_ADC_I(ia,N_SAMPLE);
+
+  ADE9000_Remove_DC(ia,N_SAMPLE);
 
   //Print IA [A]
   printf("IA\r\n");
@@ -425,6 +431,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ADE9000_IRQ1_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pin : AKD_TRIGGER_Pin */
+  GPIO_InitStruct.Pin = AKD_TRIGGER_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(AKD_TRIGGER_GPIO_Port, &GPIO_InitStruct);
+
   /*Configure GPIO pin : ADE9000_CS_Pin */
   GPIO_InitStruct.Pin = ADE9000_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -439,6 +451,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(ADE9000_IRQ0_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
@@ -469,6 +484,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	if (GPIO_Pin == ADE9000_IRQ0_Pin)
 	{
 		flag_read = 1;
+
+	}
+	if (GPIO_Pin == AKD_TRIGGER_Pin){
+		flag_trigger = 1;
 
 	}
 	if (GPIO_Pin == ADE9000_IRQ1_Pin)

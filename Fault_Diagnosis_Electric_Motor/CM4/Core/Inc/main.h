@@ -67,6 +67,8 @@ void Error_Handler(void);
 #define STLINK_RX_GPIO_Port GPIOD
 #define STLINK_TX_Pin GPIO_PIN_9
 #define STLINK_TX_GPIO_Port GPIOD
+#define AKD_TRIGGER_Pin GPIO_PIN_8
+#define AKD_TRIGGER_GPIO_Port GPIOG
 #define ADE9000_CS_Pin GPIO_PIN_9
 #define ADE9000_CS_GPIO_Port GPIOG
 #define ADE9000_IRQ0_Pin GPIO_PIN_14
